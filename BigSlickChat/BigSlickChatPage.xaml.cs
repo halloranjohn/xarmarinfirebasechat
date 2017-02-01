@@ -25,12 +25,9 @@ namespace BigSlickChat
 			InitList();
 			InitEntry();
 
-			DependencyService.Get<FirebaseService>().ObserveChildEvent<Dictionary<string, ChatItem>>("chat-items", ChildUpdated);
+			DependencyService.Get<FirebaseService>().ObserveChildEvent<ChatItem>("chat-items", OnChatItemsChildEvent);
 
-			DependencyService.Get<FirebaseService>().ObserveValueEvent<Dictionary<string, ChatItem>>("chat-items", Value);
-			//RemoveWithDelay();
-
-			DependencyService.Get<FirebaseService>().DatabaseReferenceSetValue("chat-items", new ChatItem("FDFDFDFDFDF", "fd33"));
+			DependencyService.Get<FirebaseService>().ObserveValueEvent<Dictionary<string, ChatItem>>("chat-items", OnChatItemsValueEvent);
 		}
 
 		private void InitStackLayout()
@@ -42,18 +39,21 @@ namespace BigSlickChat
 			stackLayout.BackgroundColor = Color.Blue;
 		}
 
-		public async Task RemoveWithDelay()
+		public void OnChatItemsChildEvent(ChatItem item)
 		{
-			await Task.Delay(10000);
-			DependencyService.Get<FirebaseService>().FirebaseRemoveObserveEventChildChanged<Dictionary<string, ChatItem>>("chat-items", ChildUpdated);
+			messages.Add(item);
 
+			list.ScrollTo(messages[messages.Count - 1], ScrollToPosition.End, true);
 		}
-		public void ChildUpdated(Dictionary<string, ChatItem> items)
+
+		public void OnChatItemsValueEvent(Dictionary<string, ChatItem> items)
 		{
 			foreach (ChatItem item in items.Values)
 			{
 				messages.Add(item);
 			}
+
+			DependencyService.Get<FirebaseService>().RemoveValueEvent<Dictionary<string, ChatItem>>("chat-items");
 
 			list.ScrollTo(messages[messages.Count-1], ScrollToPosition.End, true);
 		}

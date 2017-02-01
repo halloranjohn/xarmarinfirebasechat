@@ -14,21 +14,54 @@ namespace BigSlickChat.Droid
 	{
 		Dictionary<string, DatabaseReference> DatabaseReferences;
 		Dictionary<string, IValueEventListener> ValueEventListeners;
+		Dictionary<string, IChildEventListener> ChildEventListeners;
 
 		public FirebaseServiceDroid()
 		{
 			DatabaseReferences = new Dictionary<string, DatabaseReference>();
 			ValueEventListeners = new Dictionary<string, IValueEventListener>();
+			ChildEventListeners = new Dictionary<string, IChildEventListener>();
 		}
 
-		public void FirebaseObserveEventChildChanged<T>(string nodeKey, Action<T> action)
+		private DatabaseReference GetDatabaseReference(string nodeKey)
 		{
-			DatabaseReference dr = FirebaseDatabase.Instance.GetReference(nodeKey);
-			ValueEventListener<T> listener = new ValueEventListener<T>(action);
-			dr.AddValueEventListener(listener);
+			if (DatabaseReferences.ContainsKey(nodeKey))
+			{
+				return DatabaseReferences[nodeKey];
+			}
+			else
+			{
+				DatabaseReference dr = FirebaseDatabase.Instance.GetReference(nodeKey);
+				DatabaseReferences[nodeKey] =  dr;
+				return dr;
+			}
+		}
 
-			DatabaseReferences.Add(nodeKey, dr);
-			ValueEventListeners.Add(nodeKey, listener);
+		public void ObserveValueEvent<T>(string nodeKey, Action<T> action)
+		{
+			DatabaseReference dr = GetDatabaseReference(nodeKey);
+
+			if (dr != null)
+			{
+				ValueEventListener<T> listener = new ValueEventListener<T>(action);
+				dr.AddValueEventListener(listener);
+
+				ValueEventListeners.Add(nodeKey, listener);
+			}
+
+		}
+
+		public void ObserveChildEvent<T>(string nodeKey, Action<T> action)
+		{
+			DatabaseReference dr = GetDatabaseReference(nodeKey);
+
+			if (dr != null)
+			{
+				ChildEventListener<T> listener = new ChildEventListener<T>(action);
+				dr.AddChildEventListener(listener);
+
+				ChildEventListeners.Add(nodeKey, listener);
+			}
 		}
 
 		public void FirebaseObserveEventChildRemoved<T>(string nodeKey, Action<T> action)
@@ -57,7 +90,7 @@ namespace BigSlickChat.Droid
 			}
 		}
 
-		public void FirebaseRemoveObserveEventChildChanged<T>(string nodeKey, Action<T> action)
+		public void RemoveValueEvent<T>(string nodeKey)
 		{
 			DatabaseReference dr = DatabaseReferences[nodeKey];
 
