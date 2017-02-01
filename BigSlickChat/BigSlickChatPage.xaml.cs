@@ -1,0 +1,130 @@
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using Xamarin.Forms;
+
+namespace BigSlickChat
+{
+	public partial class BigSlickChatPage : ContentPage
+	{
+		// Define some data.
+		public static ObservableCollection<ChatItem> messages = new ObservableCollection<ChatItem>
+			//List<ChatItem> people = new List<ChatItem>
+			{
+				new ChatItem("lsflkdsdj slkdj sakldjaskld asldkjlkas dkjlsa ", "June"),
+				new ChatItem("jhadkajshd kjahdajkshdjkas dhjkask dh", "June"),
+				new ChatItem("sdjkahsdjkhsadkjhas ", "June"),
+				new ChatItem("asdsjlkja dlkdklaskldskdlkajslioprw io", "June")
+			};
+
+		public BigSlickChatPage()
+		{
+			InitializeComponent();
+
+			InitStackLayout();
+			InitList();
+			InitEntry();
+
+			DependencyService.Get<FirebaseService>().ObserveChildEvent<Dictionary<string, ChatItem>>("chat-items", ChildUpdated);
+
+			DependencyService.Get<FirebaseService>().ObserveValueEvent<Dictionary<string, ChatItem>>("chat-items", Value);
+			//RemoveWithDelay();
+
+			DependencyService.Get<FirebaseService>().DatabaseReferenceSetValue("chat-items", new ChatItem("FDFDFDFDFDF", "fd33"));
+		}
+
+		private void InitStackLayout()
+		{
+			stackLayout.Orientation = StackOrientation.Vertical;
+			stackLayout.HeightRequest = 1000;
+			stackLayout.HorizontalOptions = LayoutOptions.Fill;
+			stackLayout.VerticalOptions = LayoutOptions.FillAndExpand;
+			stackLayout.BackgroundColor = Color.Blue;
+		}
+
+		public async Task RemoveWithDelay()
+		{
+			await Task.Delay(10000);
+			DependencyService.Get<FirebaseService>().FirebaseRemoveObserveEventChildChanged<Dictionary<string, ChatItem>>("chat-items", ChildUpdated);
+
+		}
+		public void ChildUpdated(Dictionary<string, ChatItem> items)
+		{
+			foreach (ChatItem item in items.Values)
+			{
+				messages.Add(item);
+			}
+
+			list.ScrollTo(messages[messages.Count-1], ScrollToPosition.End, true);
+		}
+
+		private void InitEntry()
+		{
+			entry.BackgroundColor = Color.Red;
+			entry.VerticalOptions = LayoutOptions.End;
+			entry.HorizontalOptions = LayoutOptions.Fill;
+
+			entry.Completed += (sender, e) =>
+			{
+				DependencyService.Get<FirebaseService>().DatabaseReferenceSetValue("chat-items", new ChatItem(entry.Text, "15/03/2017"));
+			};
+		}
+
+
+		private void InitList()
+		{
+			list.VerticalOptions = LayoutOptions.FillAndExpand;
+			list.HorizontalOptions = LayoutOptions.FillAndExpand;
+			list.BackgroundColor = Color.Green;
+
+			// Source of data items.
+			list.ItemsSource = messages;
+
+			// Define template for displaying each item.
+			// (Argument of DataTemplate constructor is called for 
+			//      each item; it must return a Cell derivative.)
+			list.ItemTemplate = new DataTemplate(() =>
+			{
+				// Create views with bindings for displaying each property.
+				Label messageLabel = new Label();
+				messageLabel.SetBinding(Label.TextProperty, "Message");
+
+				Label dateLabel = new Label();
+				dateLabel.SetBinding(Label.TextProperty,
+					new Binding("Date", BindingMode.OneWay,
+				                null, null, "Date {0:d}"));
+				
+				BoxView boxView = new BoxView();
+				boxView.Color = Color.Gray;
+
+				// Return an assembled ViewCell.
+				return new ViewCell
+				{
+					View = new StackLayout
+					{
+						Padding = new Thickness(0, 5),
+						Orientation = StackOrientation.Horizontal,
+						Children =
+						{
+								boxView,
+								new StackLayout
+								{
+									VerticalOptions = LayoutOptions.Center,
+									Spacing = 0,
+									Children =
+									{
+										messageLabel,
+										dateLabel
+									}
+								}
+						}
+					}
+				};
+			});
+
+			//list.ChildAdded += (object sender, ElementEventArgs e) => 
+
+
+		}
+	}
+}
