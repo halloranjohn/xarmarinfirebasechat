@@ -10,7 +10,7 @@ using Xamarin.Forms;
 [assembly: Dependency(typeof(BigSlickChat.Droid.FirebaseServiceDroid))]
 namespace BigSlickChat.Droid
 {
-	public class FirebaseServiceDroid : FirebaseService
+	public class FirebaseServiceDroid : FirebaseDatabaseService
 	{
 		Dictionary<string, DatabaseReference> DatabaseReferences;
 		Dictionary<string, IValueEventListener> ValueEventListeners;

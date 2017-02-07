@@ -35,7 +35,7 @@ namespace BigSlickChat
 			{
 				user = value;
 				string uid = DependencyService.Get<FirebaseAuthService>().GetUid();
-				DependencyService.Get<FirebaseService>().SetValue("users/" + uid, user);
+				DependencyService.Get<FirebaseDatabaseService>().SetValue("users/" + uid, user);
 			}
 		}
 		private User user;
@@ -46,10 +46,10 @@ namespace BigSlickChat
 
 			if (isNewUser)
 			{
-				DependencyService.Get<FirebaseService>().SetValue("users/" + uid, User);
+				DependencyService.Get<FirebaseDatabaseService>().SetValue("users/" + uid, User);
 			}
 
-			DependencyService.Get<FirebaseService>().AddValueEvent<User>("users/" + uid, OnUserValueChanged);
+			DependencyService.Get<FirebaseDatabaseService>().AddValueEvent<User>("users/" + uid, OnUserValueChanged);
 			OnUserDataSet = onUserDataUpdated;
 		}
 

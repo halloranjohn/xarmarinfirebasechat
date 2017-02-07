@@ -146,7 +146,7 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
-    <Compile Include="DependancyServices\FirebaseServiceIos.cs" />
+    <Compile Include="DependancyServices\FirebaseDatabaseServiceIos.cs" />
     <Compile Include="DependancyServices\FirebaseAuthServiceIos.cs" />
   </ItemGroup>
   <ItemGroup>

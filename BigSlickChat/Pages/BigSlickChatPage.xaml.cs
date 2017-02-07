@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -7,27 +8,35 @@ namespace BigSlickChat
 {
 	public partial class BigSlickChatPage : ContentPage
 	{
-		// Define some data.
-		public static ObservableCollection<ChatItem> messages = new ObservableCollection<ChatItem>
-			//List<ChatItem> people = new List<ChatItem>
-			{
-				new ChatItem("lsflkdsdj slkdj sakldjaskld asldkjlkas dkjlsa ", "June"),
-				new ChatItem("jhadkajshd kjahdajkshdjkas dhjkask dh", "June"),
-				new ChatItem("sdjkahsdjkhsadkjhas ", "June"),
-				new ChatItem("asdsjlkja dlkdklaskldskdlkajslioprw io", "June")
-			};
+		private string nodeKey;
 
-		public BigSlickChatPage()
+		private ObservableCollection<ChatItem> messages = new ObservableCollection<ChatItem>();
+
+		public BigSlickChatPage(string channelId)
 		{
 			InitializeComponent();
 
+			nodeKey = channelId + "/chat-items";
 			InitStackLayout();
 			InitSidebarButton();
 			InitList();
 			InitEntry();
 
-			DependencyService.Get<FirebaseService>().AddChildEvent<ChatItem>("chat-items", OnChatItemsChildEvent);
-			DependencyService.Get<FirebaseService>().AddValueEvent<Dictionary<string, ChatItem>>("chat-items", OnChatItemsValueEvent);
+			DependencyService.Get<FirebaseDatabaseService>().AddChildEvent<ChatItem>(nodeKey, OnChatItemAdded, OnChatItemRemoved, OnChatItemChanged);
+			DependencyService.Get<FirebaseDatabaseService>().AddValueEvent<Dictionary<string, ChatItem>>(nodeKey, OnChatItemsValueEvent);
+		}
+
+		//~BigSlickChatPage()
+		//{
+		//	Debug.WriteLine("Chat page deleted");
+		//}
+
+		protected override void OnDisappearing()
+		{
+			base.OnDisappearing();
+
+			DependencyService.Get<FirebaseDatabaseService>().RemoveChildEvent(nodeKey);
+			DependencyService.Get<FirebaseDatabaseService>().RemoveValueEvent(nodeKey);
 		}
 
 		private void InitStackLayout()
@@ -46,16 +55,28 @@ namespace BigSlickChat
 
 			sidebarButton.Clicked += (sender, e) =>
 			{
-				//Navigation.PopModalAsync(false);
+				Navigation.PopModalAsync(false);
 				Navigation.PushModalAsync(new SidebarPage());
 			};
 		}
 
-		public void OnChatItemsChildEvent(ChatItem item)
+		 
+
+		public void OnChatItemAdded(ChatItem item)
 		{
 			messages.Add(item);
 
 			list.ScrollTo(messages[messages.Count - 1], ScrollToPosition.End, true);
+		}
+
+		public void OnChatItemRemoved(ChatItem item)
+		{
+			// TODO: Implement
+		}
+
+		public void OnChatItemChanged(ChatItem item)
+		{
+			// TODO: Implement
 		}
 
 		public void OnChatItemsValueEvent(Dictionary<string, ChatItem> items)
@@ -65,7 +86,7 @@ namespace BigSlickChat
 				messages.Add(item);
 			}
 
-			DependencyService.Get<FirebaseService>().RemoveValueEvent<Dictionary<string, ChatItem>>("chat-items");
+			DependencyService.Get<FirebaseDatabaseService>().RemoveValueEvent(nodeKey);
 
 			list.ScrollTo(messages[messages.Count-1], ScrollToPosition.End, true);
 		}
@@ -78,7 +99,7 @@ namespace BigSlickChat
 
 			entry.Completed += (sender, e) =>
 			{
-				DependencyService.Get<FirebaseService>().SetChildValueByAutoId("chat-items", new ChatItem(entry.Text, "15/03/2017"));
+				DependencyService.Get<FirebaseDatabaseService>().SetChildValueByAutoId(nodeKey, new ChatItem(entry.Text, "15/03/2017"));
 			};
 		}
 

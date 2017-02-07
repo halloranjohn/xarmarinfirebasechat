@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Diagnostics;
 using Xamarin.Forms;
 
 namespace BigSlickChat
@@ -38,8 +38,9 @@ namespace BigSlickChat
 
 			gotoChatroom2.Clicked += (sender, e) =>
 			{
+				Debug.WriteLine("NavigationStack :: " + Navigation.NavigationStack.Count);
 				Navigation.PopModalAsync(false);
-				Navigation.PushModalAsync(new BigSlickChatPage());	
+				Navigation.PushModalAsync(new BigSlickChatPage("room2"));	
 			};
 		}
 
@@ -50,8 +51,9 @@ namespace BigSlickChat
 
 			gotoChatroom1.Clicked += (sender, e) =>
 			{
+				Debug.WriteLine("NavigationStack :: " + Navigation.NavigationStack.Count);
 				Navigation.PopModalAsync(false);
-				Navigation.PushModalAsync(new BigSlickChatPage());
+				Navigation.PushModalAsync(new BigSlickChatPage("room1"));
 			};
 		}
 

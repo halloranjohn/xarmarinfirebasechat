@@ -11,7 +11,7 @@ namespace BigSlickChat
 		{
 			InitializeComponent();
 
-			if (false)//UserSignedIn())
+			if (UserSignedIn())
 			{
 				OnAuthComplete(false);
 			}
@@ -111,7 +111,7 @@ namespace BigSlickChat
 		public void OnUserDataSet()
 		{
 			//Navigation.PopModalAsync(false);
-			Navigation.PushModalAsync(new BigSlickChatPage());
+			Navigation.PushModalAsync(new BigSlickChatPage("room1"));
 		}
 
 		void OnSignupErrorAction(string obj)
