@@ -21,6 +21,7 @@ namespace BigSlickChat
 			InitBlueButton();
 			InitGotoChatroom1Button();
 			InitGotoChatroom2Button();
+            InitGotoLoginButton();
 		}
 
 		private void InitStackLayout()
@@ -30,6 +31,19 @@ namespace BigSlickChat
 			stackLayout.VerticalOptions = LayoutOptions.FillAndExpand;
 			stackLayout.BackgroundColor = Color.FromHex(UserService.Instance.User.color);
 		}
+
+        void InitGotoLoginButton()
+        {
+            gotoLogin.Text = "Goto Login";
+            gotoLogin.HorizontalOptions = LayoutOptions.End;
+
+            gotoLogin.Clicked += (sender, e) =>
+            {
+                Debug.WriteLine("NavigationStack :: " + Navigation.NavigationStack.Count);
+                Navigation.PopModalAsync(false);
+                Navigation.PushModalAsync(new LoginPage());
+            };
+        }
 
 		void InitGotoChatroom2Button()
 		{

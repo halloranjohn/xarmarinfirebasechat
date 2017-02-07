@@ -6,6 +6,7 @@
 			<Button x:Name="blueButton"/>
 			<Button x:Name="gotoChatroom1"/>
 			<Button x:Name="gotoChatroom2"/>
+			<Button x:Name="gotoLogin"/>
 		</StackLayout>	
 	</ContentPage.Content>
 </ContentPage>
