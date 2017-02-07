@@ -36,9 +36,8 @@ namespace BigSlickChat
 			stackLayout.HeightRequest = 1000;
 			stackLayout.HorizontalOptions = LayoutOptions.Fill;
 			stackLayout.VerticalOptions = LayoutOptions.FillAndExpand;
-			stackLayout.BackgroundColor = Color.Blue;
+			stackLayout.BackgroundColor = Color.FromHex(UserService.Instance.User.color);
 		}
-
 
 		private void InitSidebarButton()
 		{
@@ -47,6 +46,7 @@ namespace BigSlickChat
 
 			sidebarButton.Clicked += (sender, e) =>
 			{
+				//Navigation.PopModalAsync(false);
 				Navigation.PushModalAsync(new SidebarPage());
 			};
 		}
@@ -72,7 +72,7 @@ namespace BigSlickChat
 
 		private void InitEntry()
 		{
-			entry.BackgroundColor = Color.Red;
+			entry.BackgroundColor = Color.White;
 			entry.VerticalOptions = LayoutOptions.End;
 			entry.HorizontalOptions = LayoutOptions.Fill;
 
@@ -87,7 +87,7 @@ namespace BigSlickChat
 		{
 			list.VerticalOptions = LayoutOptions.FillAndExpand;
 			list.HorizontalOptions = LayoutOptions.FillAndExpand;
-			list.BackgroundColor = Color.Green;
+			list.BackgroundColor = Color.White;
 
 			// Source of data items.
 			list.ItemsSource = messages;
@@ -133,10 +133,6 @@ namespace BigSlickChat
 					}
 				};
 			});
-
-			//list.ChildAdded += (object sender, ElementEventArgs e) => 
-
-
 		}
 	}
 }

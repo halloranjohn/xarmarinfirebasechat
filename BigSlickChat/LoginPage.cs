@@ -11,7 +11,20 @@ namespace BigSlickChat
 		{
 			InitializeComponent();
 
-			InitControls();
+			if (false)//UserSignedIn())
+			{
+				OnAuthComplete(false);
+			}
+			else
+			{
+				InitControls();
+			}
+
+		}
+
+		bool UserSignedIn()
+		{
+			return (DependencyService.Get<FirebaseAuthService>().GetUid() != null);
 		}
 
 		private void InitControls()
@@ -23,13 +36,15 @@ namespace BigSlickChat
 			InitSignupButton();
 			InitLoginButton();
 			InitSignoutButton();
+
+
 		}
 
 		private void InitStackLayout()
 		{
 			stackLayout.Orientation = StackOrientation.Vertical;
 			stackLayout.HorizontalOptions = LayoutOptions.Fill;
-			stackLayout.VerticalOptions = LayoutOptions.FillAndExpand;
+			stackLayout.VerticalOptions = LayoutOptions.Center;
 			stackLayout.BackgroundColor = Color.Blue;
 		}
 
@@ -38,6 +53,7 @@ namespace BigSlickChat
 			usernameEntry.BackgroundColor = Color.Red;
 			usernameEntry.VerticalOptions = LayoutOptions.Center;
 			usernameEntry.HorizontalOptions = LayoutOptions.Fill;
+			usernameEntry.Placeholder = "email";
 		}
 
 		private void InitPasswordEntry()
@@ -45,13 +61,14 @@ namespace BigSlickChat
 			passwordEntry.BackgroundColor = Color.Red;
 			passwordEntry.VerticalOptions = LayoutOptions.End;
 			passwordEntry.HorizontalOptions = LayoutOptions.Fill;
+			passwordEntry.Placeholder = "password";
 		}
 
 		private void InitButtonsLayout()
 		{
 			buttonStackLayout.Orientation = StackOrientation.Horizontal;
-			buttonStackLayout.HorizontalOptions = LayoutOptions.Fill;
-			buttonStackLayout.VerticalOptions = LayoutOptions.EndAndExpand;
+			buttonStackLayout.HorizontalOptions = LayoutOptions.Center;
+			buttonStackLayout.VerticalOptions = LayoutOptions.End;
 			buttonStackLayout.BackgroundColor = Color.White;
 		}
 
@@ -62,12 +79,7 @@ namespace BigSlickChat
 
 			signupButton.Clicked += (sender, e) =>
 			{
-				DependencyService.Get<FirebaseAuthService>().CreateUser(usernameEntry.Text, passwordEntry.Text, () =>
-				{
-					DependencyService.Get<FirebaseService>().SetValue("users/" + DependencyService.Get<FirebaseAuthService>().GetUid() + "/color", Color.Red.ToString());
-					Navigation.PushModalAsync(new BigSlickChatPage());
-				});
-
+				DependencyService.Get<FirebaseAuthService>().CreateUser(usernameEntry.Text, passwordEntry.Text, OnSignupCompleteAction, OnSignupErrorAction);
 			};
 		}
 
@@ -78,10 +90,7 @@ namespace BigSlickChat
 
 			loginButton.Clicked += (sender, e) =>
 			{
-				DependencyService.Get<FirebaseAuthService>().SignIn(usernameEntry.Text, passwordEntry.Text, () =>
-				{
-					Navigation.PushModalAsync(new BigSlickChatPage());
-				});
+				DependencyService.Get<FirebaseAuthService>().SignIn(usernameEntry.Text, passwordEntry.Text, OnLoginCompleteAction, OnLoginErrorAction);
 			};
 		}
 
@@ -95,5 +104,37 @@ namespace BigSlickChat
 				DependencyService.Get<FirebaseAuthService>().SignOut();
 			};
 		}
+
+		public void OnAuthComplete(bool isNewUser)
+		{
+			UserService.Instance.UserAuthenticated(isNewUser, OnUserDataSet);
+		}
+
+		public void OnUserDataSet()
+		{
+			//Navigation.PopModalAsync(false);
+			Navigation.PushModalAsync(new BigSlickChatPage());
+		}
+
+		void OnSignupErrorAction(string obj)
+		{
+			this.DisplayAlert("Signup Error", obj, "OK");
+		}
+
+		void OnSignupCompleteAction()
+		{
+			OnAuthComplete(true);
+		}
+
+		void OnLoginErrorAction(string obj)
+		{
+			this.DisplayAlert("Login Error", obj, "OK");
+		}
+
+		void OnLoginCompleteAction()
+		{
+			OnAuthComplete(false);
+		}
+
 	}
 }

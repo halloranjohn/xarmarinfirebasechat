@@ -8,7 +8,6 @@ namespace BigSlickChat
 		{
 			InitializeComponent();
 
-
 			MainPage = new LoginPage();
 		}
 

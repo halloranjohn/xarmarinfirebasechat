@@ -13,7 +13,7 @@ namespace BigSlickChat.iOS
 		{
 		}
 
-		public void CreateUser(string username, string password, Action onCompleteAction)
+		public void CreateUser(string username, string password, Action onCompleteAction, Action<string> onErrorAction)
 		{
 			if (Auth.DefaultInstance.CurrentUser == null)
 			{
@@ -22,6 +22,7 @@ namespace BigSlickChat.iOS
 					if (error != null)
 					{
 						Debug.Write("CREATE USER ERROR " + error.ToString());
+						onErrorAction(error.LocalizedDescription);
 					}
 					else
 					{
@@ -33,7 +34,6 @@ namespace BigSlickChat.iOS
 			{
 				string uid = Auth.DefaultInstance.CurrentUser.Uid;
 			}
-
 		}
 
 		public void SignOut()
@@ -45,7 +45,7 @@ namespace BigSlickChat.iOS
 			}
 		}
 
-		public void SignIn(string username, string password, Action onCompleteAction)
+		public void SignIn(string username, string password, Action onCompleteAction, Action<string> onErrorAction)
 		{
 			if (Auth.DefaultInstance.CurrentUser == null)
 			{
@@ -54,6 +54,7 @@ namespace BigSlickChat.iOS
 					if (error != null)
 					{
 						Debug.Write("SIGNIN USER ERROR " + error.ToString());
+						onErrorAction(error.LocalizedDescription);
 					}
 					else
 					{
@@ -63,13 +64,18 @@ namespace BigSlickChat.iOS
 			}
 			else
 			{
-				string uid = Auth.DefaultInstance.CurrentUser.Uid;
+				onErrorAction("Already logged in as " + Auth.DefaultInstance.CurrentUser.Email);
 			}
 		}
 
 		public string GetUid()
 		{
-			return Auth.DefaultInstance.CurrentUser.Uid;
+			if (Auth.DefaultInstance.CurrentUser != null)
+			{
+				return Auth.DefaultInstance.CurrentUser.Uid;
+			}
+
+			return null;
 		}
 	}
 }

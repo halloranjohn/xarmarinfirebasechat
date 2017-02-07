@@ -28,7 +28,7 @@ namespace BigSlickChat
 			stackLayout.Orientation = StackOrientation.Vertical;
 			stackLayout.HorizontalOptions = LayoutOptions.Fill;
 			stackLayout.VerticalOptions = LayoutOptions.FillAndExpand;
-			stackLayout.BackgroundColor = Color.Blue;
+			stackLayout.BackgroundColor = Color.FromHex(UserService.Instance.User.color);
 		}
 
 		void InitGotoChatroom2Button()
@@ -38,6 +38,7 @@ namespace BigSlickChat
 
 			gotoChatroom2.Clicked += (sender, e) =>
 			{
+				Navigation.PopModalAsync(false);
 				Navigation.PushModalAsync(new BigSlickChatPage());	
 			};
 		}
@@ -49,6 +50,7 @@ namespace BigSlickChat
 
 			gotoChatroom1.Clicked += (sender, e) =>
 			{
+				Navigation.PopModalAsync(false);
 				Navigation.PushModalAsync(new BigSlickChatPage());
 			};
 		}
@@ -60,7 +62,11 @@ namespace BigSlickChat
 
 			blueButton.Clicked += (sender, e) =>
 			{
-				DependencyService.Get<FirebaseService>().SetValue("users/" + DependencyService.Get<FirebaseAuthService>().GetUid() + "/color", "0000FF");
+				User user = UserService.Instance.User;
+				user.color = "0000FF";
+				UserService.Instance.User = user;
+				stackLayout.BackgroundColor = Color.FromHex(UserService.Instance.User.color);
+				//DependencyService.Get<FirebaseService>().SetValue("users/" + DependencyService.Get<FirebaseAuthService>().GetUid() + "/color", );
 
 			};
 		}
@@ -72,8 +78,10 @@ namespace BigSlickChat
 
 			redButton.Clicked += (sender, e) =>
 			{
-				DependencyService.Get<FirebaseService>().SetValue("users/" + DependencyService.Get<FirebaseAuthService>().GetUid() + "/color", "FF0000");
-
+				User user = UserService.Instance.User;
+				user.color = "FF0000";
+				UserService.Instance.User = user;
+				stackLayout.BackgroundColor = Color.FromHex(UserService.Instance.User.color);
 			};
 		}
 	}
