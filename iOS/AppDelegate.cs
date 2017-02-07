@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Firebase.Auth;
 using Firebase.Database;
 using Foundation;
 using Newtonsoft.Json;
@@ -21,6 +22,7 @@ namespace BigSlickChat.iOS
 			LoadApplication(new App());
 
 			//InitFirebase();
+
 
 			return base.FinishedLaunching(app, options);
 		}

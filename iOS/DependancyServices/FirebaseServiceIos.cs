@@ -22,7 +22,7 @@ namespace BigSlickChat.iOS
 			ValueEventHandles = new Dictionary<string, nuint>();
 		}
 
-		void FirebaseService.DatabaseReferenceSetValue(string nodeKey, object obj)
+		void FirebaseService.SetChildValueByAutoId(string nodeKey, object obj)
 		{
 			DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
 
@@ -33,6 +33,19 @@ namespace BigSlickChat.iOS
 			NSObject nsObj = NSJsonSerialization.Deserialize(nsData, NSJsonReadingOptions.AllowFragments, out error);
 			//NSObject nsObj = NSObjectConversionExtensions.ConvertToNSObject(obj);//NSObject.FromObject(obj);
 			nodeRef.GetChildByAutoId().SetValue(nsObj);
+		}
+
+		void FirebaseService.SetValue(string nodeKey, object obj)
+		{
+			DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
+
+			DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
+			string objectJsonString = JsonConvert.SerializeObject(obj);
+			NSError error = null;
+			NSData nsData = NSData.FromString(objectJsonString);
+			NSObject nsObj = NSJsonSerialization.Deserialize(nsData, NSJsonReadingOptions.AllowFragments, out error);
+			//NSObject nsObj = NSObjectConversionExtensions.ConvertToNSObject(obj);//NSObject.FromObject(obj);
+			nodeRef.SetValue(nsObj);
 		}
 
 		void FirebaseService.ObserveChildEvent<T>(string nodeKey, Action<T> action)

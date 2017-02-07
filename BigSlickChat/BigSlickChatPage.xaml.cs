@@ -22,11 +22,11 @@ namespace BigSlickChat
 			InitializeComponent();
 
 			InitStackLayout();
+			InitSidebarButton();
 			InitList();
 			InitEntry();
 
 			DependencyService.Get<FirebaseService>().ObserveChildEvent<ChatItem>("chat-items", OnChatItemsChildEvent);
-
 			DependencyService.Get<FirebaseService>().ObserveValueEvent<Dictionary<string, ChatItem>>("chat-items", OnChatItemsValueEvent);
 		}
 
@@ -37,6 +37,18 @@ namespace BigSlickChat
 			stackLayout.HorizontalOptions = LayoutOptions.Fill;
 			stackLayout.VerticalOptions = LayoutOptions.FillAndExpand;
 			stackLayout.BackgroundColor = Color.Blue;
+		}
+
+
+		private void InitSidebarButton()
+		{
+			sidebarButton.Text = "Goto Sidebar";
+			sidebarButton.HorizontalOptions = LayoutOptions.Fill;
+
+			sidebarButton.Clicked += (sender, e) =>
+			{
+				Navigation.PushModalAsync(new SidebarPage());
+			};
 		}
 
 		public void OnChatItemsChildEvent(ChatItem item)
@@ -66,7 +78,7 @@ namespace BigSlickChat
 
 			entry.Completed += (sender, e) =>
 			{
-				DependencyService.Get<FirebaseService>().DatabaseReferenceSetValue("chat-items", new ChatItem(entry.Text, "15/03/2017"));
+				DependencyService.Get<FirebaseService>().SetChildValueByAutoId("chat-items", new ChatItem(entry.Text, "15/03/2017"));
 			};
 		}
 

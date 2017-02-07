@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:BigSlickChat" x:Class="BigSlickChat.BigSlickChatPage">
 	<!--<Label Text="Welcome to Xamarin Forms!" VerticalOptions="Center" HorizontalOptions="Center" />-->
 	<StackLayout x:Name="stackLayout">
+		<Button x:Name="sidebarButton"/>
 		<ListView x:Name="list"/>
 		<Entry x:Name="entry"/>
 	</StackLayout>

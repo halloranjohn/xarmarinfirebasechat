@@ -8,7 +8,8 @@ namespace BigSlickChat
 		{
 			InitializeComponent();
 
-			MainPage = new BigSlickChatPage();
+
+			MainPage = new LoginPage();
 		}
 
 		protected override void OnStart()
