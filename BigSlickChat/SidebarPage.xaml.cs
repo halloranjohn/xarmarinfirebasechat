@@ -62,12 +62,7 @@ namespace BigSlickChat
 
 			blueButton.Clicked += (sender, e) =>
 			{
-				User user = UserService.Instance.User;
-				user.color = "0000FF";
-				UserService.Instance.User = user;
-				stackLayout.BackgroundColor = Color.FromHex(UserService.Instance.User.color);
-				//DependencyService.Get<FirebaseService>().SetValue("users/" + DependencyService.Get<FirebaseAuthService>().GetUid() + "/color", );
-
+				SetColour("0000FF");
 			};
 		}
 
@@ -78,11 +73,16 @@ namespace BigSlickChat
 
 			redButton.Clicked += (sender, e) =>
 			{
-				User user = UserService.Instance.User;
-				user.color = "FF0000";
-				UserService.Instance.User = user;
-				stackLayout.BackgroundColor = Color.FromHex(UserService.Instance.User.color);
+				SetColour("FF0000");
 			};
+		}
+
+		private void SetColour(string color)
+		{
+			User user = UserService.Instance.User;
+			user.color = color;
+			UserService.Instance.User = user;
+			stackLayout.BackgroundColor = Color.FromHex(UserService.Instance.User.color);
 		}
 	}
 }

@@ -48,7 +48,7 @@ namespace BigSlickChat.iOS
 			nodeRef.SetValue(nsObj);
 		}
 
-		void FirebaseService.ObserveChildEvent<T>(string nodeKey, Action<T> action)
+		void FirebaseService.AddChildEvent<T>(string nodeKey, Action<T> action)
 		{
 			DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
 
@@ -66,7 +66,7 @@ namespace BigSlickChat.iOS
 			ChildAddedEventHandles[nodeKey] = handleReference;
 		}
 
-		void FirebaseService.ObserveValueEvent<T>(string nodeKey, Action<T> action)
+		void FirebaseService.AddValueEvent<T>(string nodeKey, Action<T> action)
 		{
 			DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
 
@@ -94,6 +94,17 @@ namespace BigSlickChat.iOS
 				nodeRef.RemoveObserver(ValueEventHandles[nodeKey]);
 			}
 
+		}
+
+		void FirebaseService.RemoveChildEvent<T>(string nodeKey)
+		{
+			if (ChildAddedEventHandles.ContainsKey(nodeKey))
+			{
+				DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
+
+				DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
+				nodeRef.RemoveObserver(ChildAddedEventHandles[nodeKey]);
+			}
 		}
 	}
 

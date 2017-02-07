@@ -3,9 +3,10 @@ namespace BigSlickChat
 {
 	public interface FirebaseService
 	{
-		void ObserveChildEvent<T>(string nodeKey, Action<T> action);
-		void ObserveValueEvent<T>(string nodeKey, Action<T> action);
+		void AddChildEvent<T>(string nodeKey, Action<T> OnChildEvent);
+		void AddValueEvent<T>(string nodeKey, Action<T> OnValueEvent);
 		void RemoveValueEvent<T>(string nodeKey);
+		void RemoveChildEvent<T>(string nodeKey);
 		void SetValue(string nodeKey, object obj);
 		void SetChildValueByAutoId(string nodeKey, object obj);
 	}

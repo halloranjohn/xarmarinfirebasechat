@@ -49,7 +49,7 @@ namespace BigSlickChat
 				DependencyService.Get<FirebaseService>().SetValue("users/" + uid, User);
 			}
 
-			DependencyService.Get<FirebaseService>().ObserveValueEvent<User>("users/" + uid, OnUserValueChanged);
+			DependencyService.Get<FirebaseService>().AddValueEvent<User>("users/" + uid, OnUserValueChanged);
 			OnUserDataSet = onUserDataUpdated;
 		}
 

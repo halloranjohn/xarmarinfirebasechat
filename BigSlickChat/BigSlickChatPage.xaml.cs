@@ -26,8 +26,8 @@ namespace BigSlickChat
 			InitList();
 			InitEntry();
 
-			DependencyService.Get<FirebaseService>().ObserveChildEvent<ChatItem>("chat-items", OnChatItemsChildEvent);
-			DependencyService.Get<FirebaseService>().ObserveValueEvent<Dictionary<string, ChatItem>>("chat-items", OnChatItemsValueEvent);
+			DependencyService.Get<FirebaseService>().AddChildEvent<ChatItem>("chat-items", OnChatItemsChildEvent);
+			DependencyService.Get<FirebaseService>().AddValueEvent<Dictionary<string, ChatItem>>("chat-items", OnChatItemsValueEvent);
 		}
 
 		private void InitStackLayout()

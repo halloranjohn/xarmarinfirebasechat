@@ -36,8 +36,6 @@ namespace BigSlickChat
 			InitSignupButton();
 			InitLoginButton();
 			InitSignoutButton();
-
-
 		}
 
 		private void InitStackLayout()
