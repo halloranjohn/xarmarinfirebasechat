@@ -60,37 +60,6 @@ namespace BigSlickChat
 			};
 		}
 
-		 
-
-		public void OnChatItemAdded(ChatItem item)
-		{
-			messages.Add(item);
-
-			list.ScrollTo(messages[messages.Count - 1], ScrollToPosition.End, true);
-		}
-
-		public void OnChatItemRemoved(ChatItem item)
-		{
-			// TODO: Implement
-		}
-
-		public void OnChatItemChanged(ChatItem item)
-		{
-			// TODO: Implement
-		}
-
-		public void OnChatItemsValueEvent(Dictionary<string, ChatItem> items)
-		{
-			foreach (ChatItem item in items.Values)
-			{
-				messages.Add(item);
-			}
-
-			DependencyService.Get<FirebaseDatabaseService>().RemoveValueEvent(nodeKey);
-
-			list.ScrollTo(messages[messages.Count-1], ScrollToPosition.End, true);
-		}
-
 		private void InitEntry()
 		{
 			entry.BackgroundColor = Color.White;
@@ -154,6 +123,35 @@ namespace BigSlickChat
 					}
 				};
 			});
+		}
+
+		public void OnChatItemAdded(ChatItem item)
+		{
+			messages.Add(item);
+
+			list.ScrollTo(messages[messages.Count - 1], ScrollToPosition.End, true);
+		}
+
+		public void OnChatItemRemoved(ChatItem item)
+		{
+			// TODO: Implement
+		}
+
+		public void OnChatItemChanged(ChatItem item)
+		{
+			// TODO: Implement
+		}
+
+		public void OnChatItemsValueEvent(Dictionary<string, ChatItem> items)
+		{
+			foreach (ChatItem item in items.Values)
+			{
+				messages.Add(item);
+			}
+
+			DependencyService.Get<FirebaseDatabaseService>().RemoveValueEvent(nodeKey);
+
+			list.ScrollTo(messages[messages.Count - 1], ScrollToPosition.End, true);
 		}
 	}
 }
