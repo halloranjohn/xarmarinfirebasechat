@@ -14,6 +14,10 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using Java.Util;
 using GoogleGson;
+using Android.Gms.Common;
+using Android.Util;
+using Firebase.Iid;
+using Firebase.Messaging;
 
 namespace BigSlickChat.Droid
 {
@@ -29,7 +33,24 @@ namespace BigSlickChat.Droid
 
 			global::Xamarin.Forms.Forms.Init(this, bundle);
 
+			FirebaseAuthServiceDroid.mainActivity = this;
+
 			LoadApplication(new App());
+
+			if (Intent.Extras != null)
+			{
+				foreach (var key in Intent.Extras.KeySet())
+				{
+					var value = Intent.Extras.GetString(key);
+					Log.Debug("BIGSLICKAPP", "Key: {0} Value: {1}", key, value);
+				}
+			}
+
+			Log.Debug("BIGSLICKAPPdddddddddddd", "InstanceID token: " + FirebaseInstanceId.Instance.Token);
+
+			FirebaseMessaging.Instance.SubscribeToTopic("newsaa");
+
+			IsPlayServicesAvailable();
 
 			//InitFirebase();
 		}
@@ -46,6 +67,37 @@ namespace BigSlickChat.Droid
 			DatabaseReference dr = FirebaseDatabase.Instance.GetReference("chat-items");
 
 			dr.AddValueEventListener(this);
+		}
+
+		FirebaseSendTestMessages()
+		{
+			FirebaseMessaging fm = FirebaseMessaging.Instance;
+			fm.Send(new RemoteMessage.Builder(Firebase.Auth.FirebaseAuth.Instance.CurrentUser.Uid + "@gcm.googleapis.com")
+			        .SetMessageId("testID").
+			  .AddData("my_message", "Hello World")
+			  .AddData("my_action", "SAY_HELLO")
+			  .Build());
+		}
+
+		public bool IsPlayServicesAvailable()
+		{
+			int resultCode = GoogleApiAvailability.Instance.IsGooglePlayServicesAvailable(this);
+			if (resultCode != ConnectionResult.Success)
+			{
+				if (GoogleApiAvailability.Instance.IsUserResolvableError(resultCode))
+					System.Diagnostics.Debug.WriteLine(GoogleApiAvailability.Instance.GetErrorString(resultCode));
+				else
+				{
+					System.Diagnostics.Debug.WriteLine("This device is not supported");
+					Finish();
+				}
+				return false;
+			}
+			else
+			{
+				System.Diagnostics.Debug.WriteLine("Google Play Services is available.");
+				return true;
+			}
 		}
 
 		//public void OnDataChange(DataSnapshot snapshot)

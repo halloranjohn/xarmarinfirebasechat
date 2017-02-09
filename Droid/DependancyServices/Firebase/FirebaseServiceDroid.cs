@@ -37,7 +37,7 @@ namespace BigSlickChat.Droid
 			}
 		}
 
-		public void ObserveValueEvent<T>(string nodeKey, Action<T> action)
+		public void AddValueEvent<T>(string nodeKey, Action<T> action)
 		{
 			DatabaseReference dr = GetDatabaseReference(nodeKey);
 
@@ -51,13 +51,13 @@ namespace BigSlickChat.Droid
 
 		}
 
-		public void ObserveChildEvent<T>(string nodeKey, Action<T> action)
+		public void AddChildEvent<T>(string nodeKey, Action<T> OnChildAdded, Action<T> OnChildRemoved, Action<T> OnChildUpdated)
 		{
 			DatabaseReference dr = GetDatabaseReference(nodeKey);
 
 			if (dr != null)
 			{
-				ChildEventListener<T> listener = new ChildEventListener<T>(action);
+				ChildEventListener<T> listener = new ChildEventListener<T>(OnChildAdded);
 				dr.AddChildEventListener(listener);
 
 				ChildEventListeners.Add(nodeKey, listener);
@@ -74,7 +74,7 @@ namespace BigSlickChat.Droid
 			ValueEventListeners.Add(nodeKey, listener);
 		}
 
-		public void DatabaseReferenceSetValue(string nodeKey, object obj)
+		public void SetChildValueByAutoId(string nodeKey, object obj)
 		{
 			DatabaseReference dr = FirebaseDatabase.Instance.GetReference(nodeKey);
 
@@ -90,7 +90,23 @@ namespace BigSlickChat.Droid
 			}
 		}
 
-		public void RemoveValueEvent<T>(string nodeKey)
+		public void SetValue(string nodeKey, object obj)
+		{
+			DatabaseReference dr = FirebaseDatabase.Instance.GetReference(nodeKey);
+
+			if (dr != null)
+			{
+				string objJsonString = JsonConvert.SerializeObject(obj);
+
+				Gson gson = new GsonBuilder().SetPrettyPrinting().Create();
+				HashMap dataHashMap = new HashMap();
+				Java.Lang.Object jsonObj = gson.FromJson(objJsonString, dataHashMap.Class);
+				dataHashMap = jsonObj.JavaCast<HashMap>();
+				dr.SetValue(dataHashMap);
+			}
+		}
+
+		public void RemoveValueEvent(string nodeKey)
 		{
 			DatabaseReference dr = DatabaseReferences[nodeKey];
 
@@ -100,6 +116,32 @@ namespace BigSlickChat.Droid
 			}
 		}
 
+		//void FirebaseDatabaseService.AddChildEvent<T>(string nodeKey, Action<T> OnChildAdded, Action<T> OnChildRemoved, Action<T> OnChildChanged)
+		//{
+		//	throw new NotImplementedException();
+		//}
+
+		//void FirebaseDatabaseService.AddValueEvent<T>(string nodeKey, Action<T> OnValueEvent)
+		//{
+		//	throw new NotImplementedException();
+		//}
+
+
+
+		void FirebaseDatabaseService.RemoveChildEvent(string nodeKey)
+		{
+			//throw new NotImplementedException();
+		}
+
+		//void FirebaseDatabaseService.SetValue(string nodeKey, object obj)
+		//{
+		//	//throw new NotImplementedException();
+		//}
+
+		//void FirebaseDatabaseService.SetChildValueByAutoId(string nodeKey, object obj)
+		//{
+		//	throw new NotImplementedException();
+		//}
 	}
 
 }
