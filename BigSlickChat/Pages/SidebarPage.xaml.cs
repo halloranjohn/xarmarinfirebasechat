@@ -27,8 +27,8 @@ namespace BigSlickChat
 		private void InitStackLayout()
 		{
 			stackLayout.Orientation = StackOrientation.Vertical;
-			stackLayout.HorizontalOptions = LayoutOptions.Fill;
-			stackLayout.VerticalOptions = LayoutOptions.FillAndExpand;
+			stackLayout.HorizontalOptions = LayoutOptions.Center;
+			stackLayout.VerticalOptions = LayoutOptions.Center;
 			stackLayout.BackgroundColor = Color.FromHex(UserService.Instance.User.color);
 		}
 
@@ -48,7 +48,7 @@ namespace BigSlickChat
 		void InitGotoChatroom2Button()
 		{
 			gotoChatroom2.Text = "Goto Chatroom 2";
-			gotoChatroom2.HorizontalOptions = LayoutOptions.End;
+			gotoChatroom2.HorizontalOptions = LayoutOptions.Center;
 
 			gotoChatroom2.Clicked += (sender, e) =>
 			{
@@ -61,7 +61,7 @@ namespace BigSlickChat
 		void InitGotoChatroom1Button()
 		{
 			gotoChatroom1.Text = "Goto Chatroom 1";
-			gotoChatroom1.HorizontalOptions = LayoutOptions.End;
+			gotoChatroom1.HorizontalOptions = LayoutOptions.Center;
 
 			gotoChatroom1.Clicked += (sender, e) =>
 			{
@@ -74,8 +74,7 @@ namespace BigSlickChat
 		void InitBlueButton()
 		{
 			blueButton.Text = "Set Colour To Blue";
-			blueButton.HorizontalOptions = LayoutOptions.End;
-
+			blueButton.HorizontalOptions = LayoutOptions.Center;
 			blueButton.Clicked += (sender, e) =>
 			{
 				SetColour("0000FF");
@@ -85,7 +84,7 @@ namespace BigSlickChat
 		void InitRedButton()
 		{
 			redButton.Text = "Set Colour To Red";
-			redButton.HorizontalOptions = LayoutOptions.End;
+			redButton.HorizontalOptions = LayoutOptions.Center;
 
 			redButton.Clicked += (sender, e) =>
 			{
