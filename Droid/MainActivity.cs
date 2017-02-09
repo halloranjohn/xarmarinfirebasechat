@@ -16,7 +16,7 @@ using Java.Util;
 using GoogleGson;
 
 namespace BigSlickChat.Droid
-{
+{ 
 	[Activity(Label = "BigSlickChat.Droid", Icon = "@drawable/icon", Theme = "@style/MyTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, IValueEventListener
 	{
