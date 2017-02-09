@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using System;
+using Xamarin.Forms;
 
 namespace BigSlickChat
 {
@@ -8,10 +9,17 @@ namespace BigSlickChat
 		{
 			InitializeComponent();
 
+            InitServices();
+
 			MainPage = new LoginPage();
 		}
 
-		protected override void OnStart()
+        void InitServices()
+        {
+            ChatService.Instance.Init(DependencyService.Get<FirebaseDatabaseService>());
+        }
+
+        protected override void OnStart()
 		{
 			// Handle when your app starts
 		}

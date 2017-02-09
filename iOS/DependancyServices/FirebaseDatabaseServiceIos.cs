@@ -24,29 +24,86 @@ namespace BigSlickChat.iOS
 			ValueEventHandles = new Dictionary<string, nuint>();
 		}
 
-		void FirebaseDatabaseService.SetChildValueByAutoId(string nodeKey, object obj)
+		void FirebaseDatabaseService.SetChildValueByAutoId(string nodeKey, object obj, Action onSuccess, Action<string> onError)
 		{
 			DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
 
 			DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
 			string objectJsonString = JsonConvert.SerializeObject(obj);
-			NSError error = null;
+            NSError jsonError = null;
 			NSData nsData = NSData.FromString(objectJsonString);
-			NSObject nsObj = NSJsonSerialization.Deserialize(nsData, NSJsonReadingOptions.AllowFragments, out error);
-			nodeRef.GetChildByAutoId().SetValue(nsObj);
+			NSObject nsObj = NSJsonSerialization.Deserialize(nsData, NSJsonReadingOptions.AllowFragments, out jsonError);
+
+            nodeRef.GetChildByAutoId().SetValue(nsObj, (NSError error, DatabaseReference reference) => 
+            {
+                if (error == null)
+                {
+                    if (onSuccess != null)
+                    {
+                        onSuccess();
+                    }
+                }
+                else if (onError != null)
+                {
+                    onError(error.Description);
+                }       
+            });
 		}
 
-		void FirebaseDatabaseService.SetValue(string nodeKey, object obj)
+		void FirebaseDatabaseService.SetValue(string nodeKey, object obj, Action onSuccess, Action<string> onError)
 		{
 			DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
 
 			DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
-			string objectJsonString = JsonConvert.SerializeObject(obj);
-			NSError error = null;
-			NSData nsData = NSData.FromString(objectJsonString);
-			NSObject nsObj = NSJsonSerialization.Deserialize(nsData, NSJsonReadingOptions.AllowFragments, out error);
-			nodeRef.SetValue(nsObj);
+
+            NSObject nsObj = null;
+
+            if(obj != null)
+            {
+                string objectJsonString = JsonConvert.SerializeObject(obj);
+                NSError jsonError = null;
+                NSData nsData = NSData.FromString(objectJsonString);
+
+                nsObj = NSJsonSerialization.Deserialize(nsData, NSJsonReadingOptions.AllowFragments, out jsonError);                
+            }
+
+            nodeRef.SetValue(nsObj, (NSError error, DatabaseReference reference) =>
+            {
+                if(error == null)
+                {
+                    if(onSuccess != null)
+                    {
+                        onSuccess();                        
+                    }
+                }
+                else if(onError != null)
+                {
+                    onError(error.Description);
+                }
+            });
 		}
+
+        void FirebaseDatabaseService.RemoveValue(string nodeKey, Action onSuccess, Action<string> onError)
+        {
+            DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
+
+            DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
+
+            nodeRef.RemoveValue((NSError error, DatabaseReference reference) =>
+            {
+                if (error == null)
+                {
+                    if (onSuccess != null)
+                    {
+                        onSuccess();
+                    }
+                }
+                else if (onError != null)
+                {
+                    onError(error.Description);
+                }
+            });
+        }
 
 		void FirebaseDatabaseService.AddChildEvent<T>(string nodeKey, Action<T> OnChildAdded, Action<T> OnChildRemoved, Action<T> OnChildChanged)
 		{
@@ -63,11 +120,11 @@ namespace BigSlickChat.iOS
 			ChildChangedEventHandles[nodeKey] = handleReference;
 		}
 
-		nuint AddChildEvent<T>(DatabaseReference nodeRef, DataEventType type, Action<T> eventAction )
+		nuint AddChildEvent<T>(DatabaseReference nodeRef, DataEventType type, Action<T> eventAction)
 		{
 			nuint handleReference = nodeRef.ObserveEvent(type, (snapshot) =>
 			{
-				if (snapshot.HasChildren)
+                if (snapshot.HasChildren && eventAction != null)
 				{
 					NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
 					NSError error = null;
@@ -81,14 +138,35 @@ namespace BigSlickChat.iOS
 			return handleReference;
 		}
 
+        void FirebaseDatabaseService.AddSingleValueEvent<T>(string nodeKey, Action<T> action)
+        {
+            DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
+
+            DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
+
+            nodeRef.ObserveSingleEvent(DataEventType.Value, (snapshot) =>
+            {
+                if (snapshot.HasChildren && action != null)
+                {
+                    NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
+                    NSError error = null;
+                    string itemDictString = NSJsonSerialization.Serialize(itemDict, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
+
+                    T item = JsonConvert.DeserializeObject<T>(itemDictString);
+                    action(item);
+                }
+            });
+        }
+
 		void FirebaseDatabaseService.AddValueEvent<T>(string nodeKey, Action<T> action)
 		{
 			DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
 
-			DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
+            DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
+
 			nuint handleReference = nodeRef.ObserveEvent(DataEventType.Value, (snapshot) =>
 			{
-				if (snapshot.HasChildren)
+				if (snapshot.HasChildren && action != null)
 				{
 					NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
 					NSError error = null;
@@ -126,6 +204,29 @@ namespace BigSlickChat.iOS
 				nodeRef.RemoveObserver(ChildChangedEventHandles[nodeKey]);
 			}
 		}
+
+        void FirebaseDatabaseService.ChildExists<T>(string nodeKey, Action<T> onNodeFound, Action onNodeMissing)
+        {
+            DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
+
+            DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
+            nodeRef.ObserveSingleEvent(DataEventType.Value, (snapshot) =>
+            {
+                if (snapshot.Exists && onNodeFound != null)
+                {
+                    NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
+                    NSError error = null;
+                    string itemDictString = NSJsonSerialization.Serialize(itemDict, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
+
+                    T item = JsonConvert.DeserializeObject<T>(itemDictString);
+                    onNodeFound(item);
+                }
+                else if(onNodeMissing != null)
+                {
+                    onNodeMissing();
+                }
+            });
+        }
 	}
 
 

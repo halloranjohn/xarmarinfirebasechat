@@ -1,7 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="BigSlickChat.SidebarPage">
 	<ContentPage.Content>
-		<StackLayout x:Name="stackLayout">
+		<StackLayout x:Name="stackLayout" Orientation="Vertical">
+
+			<StackLayout x:Name="addRemoveStack" Orientation="Horizontal">
+				<Entry x:Name="chatroomEntry"/>
+				<Button x:Name="addChatroomButton"/>
+				<Button x:Name="removeChatroomButton"/>
+			</StackLayout>
+
 			<Button x:Name="redButton"/>
 			<Button x:Name="blueButton"/>
 			<Button x:Name="gotoChatroom1"/>

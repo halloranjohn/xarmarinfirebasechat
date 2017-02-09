@@ -23,7 +23,6 @@ namespace BigSlickChat.iOS
 
 			//InitFirebase();
 
-
 			return base.FinishedLaunching(app, options);
 		}
 

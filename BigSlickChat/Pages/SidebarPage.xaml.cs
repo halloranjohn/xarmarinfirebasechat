@@ -17,6 +17,7 @@ namespace BigSlickChat
 		private void InitControls()
 		{
 			InitStackLayout();
+            InitAddRemoveStackLayout();
 			InitRedButton();
 			InitBlueButton();
 			InitGotoChatroom1Button();
@@ -24,18 +25,60 @@ namespace BigSlickChat
             InitGotoLoginButton();
 		}
 
-		private void InitStackLayout()
+        private void InitStackLayout()
 		{
 			stackLayout.Orientation = StackOrientation.Vertical;
+            stackLayout.Padding = 20;
 			stackLayout.HorizontalOptions = LayoutOptions.Center;
 			stackLayout.VerticalOptions = LayoutOptions.Center;
 			stackLayout.BackgroundColor = Color.FromHex(UserService.Instance.User.color);
 		}
 
+        void InitAddRemoveStackLayout()
+        {
+            stackLayout.Spacing = 30;
+
+            //entry
+            chatroomEntry.Placeholder = "Chatroom Id...";
+
+            //add button
+            addChatroomButton.Text = "Add";
+            addChatroomButton.Clicked += OnAddChatroom;
+
+            //remove button
+            removeChatroomButton.Text = "Remove";
+            removeChatroomButton.Clicked += OnRemoveChatroom;
+        }
+
+        void OnAddChatroom(object sender, EventArgs e)
+        {
+            if(!string.IsNullOrEmpty(chatroomEntry.Text))
+            {
+                //logic to add chat room
+                ChatroomModel cr = new ChatroomModel();
+                cr.Id = chatroomEntry.Text;
+                cr.Title = chatroomEntry.Text;
+                cr.UserIds = new List<string>() { DependencyService.Get<FirebaseAuthService>().GetUid() };
+
+                ChatService.Instance.CreateChatroom(cr);
+            }
+        }
+
+        void OnRemoveChatroom(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(chatroomEntry.Text))
+            {
+                //logic to remove chat room
+                string chatroomId = chatroomEntry.Text;
+
+                ChatService.Instance.RemoveChatroom(chatroomId);
+            }
+        }
+
         void InitGotoLoginButton()
         {
             gotoLogin.Text = "Goto Login";
-            gotoLogin.HorizontalOptions = LayoutOptions.End;
+            gotoLogin.HorizontalOptions = LayoutOptions.Center;
 
             gotoLogin.Clicked += (sender, e) =>
             {

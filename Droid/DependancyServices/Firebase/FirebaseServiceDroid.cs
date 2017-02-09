@@ -100,6 +100,45 @@ namespace BigSlickChat.Droid
 			}
 		}
 
-	}
+        public void AddChildEvent<T>(string nodeKey, Action<T> OnChildAdded = null, Action<T> OnChildRemoved = null, Action<T> OnChildChanged = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddValueEvent<T>(string nodeKey, Action<T> OnValueEvent = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddSingleValueEvent<T>(string nodeKey, Action<T> OnValueEvent = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveValueEvent(string nodeKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveChildEvent(string nodeKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetValue(string nodeKey, object obj, Action onSuccess = null, Action<string> onError = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetChildValueByAutoId(string nodeKey, object obj, Action onSuccess = null, Action<string> onError = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ChildExists<T>(string nodeKey, Action<T> onNodeFound = null, Action onNodeMissing = null)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
 }
