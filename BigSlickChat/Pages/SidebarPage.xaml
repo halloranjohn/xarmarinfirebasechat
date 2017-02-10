@@ -11,9 +11,13 @@
 
 			<Button x:Name="redButton"/>
 			<Button x:Name="blueButton"/>
-			<Button x:Name="gotoChatroom1"/>
-			<Button x:Name="gotoChatroom2"/>
-			<Button x:Name="gotoLogin"/>
+
+			<StackLayout x:Name="chatroomStack" Orientation="Vertical">
+				<Button x:Name="gotoChatroom1"/>
+				<Button x:Name="gotoChatroom2"/>
+			</StackLayout>
+			
+			<Button x:Name="logoutBtn"/>
 		</StackLayout>	
 	</ContentPage.Content>
 </ContentPage>

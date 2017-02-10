@@ -11,7 +11,7 @@ namespace BigSlickChat
 		{
 			InitializeComponent();
 
-			if (UserSignedIn())
+            if (UserSignedIn())
 			{
 				OnAuthComplete(false);
 			}
@@ -99,7 +99,8 @@ namespace BigSlickChat
 
 			signOutButton.Clicked += (sender, e) =>
 			{
-				DependencyService.Get<FirebaseAuthService>().SignOut();
+                UserService.Instance.Signout();
+				//DependencyService.Get<FirebaseAuthService>().SignOut();
 			};
 		}
 
@@ -111,7 +112,8 @@ namespace BigSlickChat
 		public void OnUserDataSet()
 		{
 			//Navigation.PopModalAsync(false);
-			Navigation.PushModalAsync(new BigSlickChatPage("room1"));
+            Navigation.PushModalAsync(new SidebarPage());
+			//Navigation.PushModalAsync(new BigSlickChatPage("room1"));
 		}
 
 		void OnSignupErrorAction(string obj)

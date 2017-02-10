@@ -20,8 +20,7 @@ namespace BigSlickChat
             InitAddRemoveStackLayout();
 			InitRedButton();
 			InitBlueButton();
-			InitGotoChatroom1Button();
-			InitGotoChatroom2Button();
+            InitChatroomStackLayout();
             InitGotoLoginButton();
 		}
 
@@ -75,14 +74,24 @@ namespace BigSlickChat
             }
         }
 
+        void InitChatroomStackLayout()
+        {
+            InitGotoChatroom1Button();
+            InitGotoChatroom2Button();
+        }
+
         void InitGotoLoginButton()
         {
-            gotoLogin.Text = "Goto Login";
-            gotoLogin.HorizontalOptions = LayoutOptions.Center;
+            logoutBtn.Text = "Logout";
+            logoutBtn.HorizontalOptions = LayoutOptions.Center;
 
-            gotoLogin.Clicked += (sender, e) =>
+            logoutBtn.Clicked += (sender, e) =>
             {
                 Debug.WriteLine("NavigationStack :: " + Navigation.NavigationStack.Count);
+
+                UserService.Instance.Signout();
+                //DependencyService.Get<FirebaseAuthService>().SignOut();
+
                 Navigation.PopModalAsync(false);
                 Navigation.PushModalAsync(new LoginPage());
             };

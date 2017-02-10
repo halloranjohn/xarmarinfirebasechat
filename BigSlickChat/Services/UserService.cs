@@ -1,5 +1,6 @@
 ﻿using System;
 using Xamarin.Forms;
+using System.Collections.Generic;
 
 namespace BigSlickChat
 {
@@ -9,7 +10,7 @@ namespace BigSlickChat
 
 		private UserService() 
 		{
-			user = new User("FF0000");
+            User = new User(DependencyService.Get<FirebaseAuthService>().GetUid(), new List<string>(), "FF0000");
 		}
 
 		public static UserService Instance
@@ -34,8 +35,7 @@ namespace BigSlickChat
 			set
 			{
 				user = value;
-				string uid = DependencyService.Get<FirebaseAuthService>().GetUid();
-				DependencyService.Get<FirebaseDatabaseService>().SetValue("users/" + uid, user);
+                DependencyService.Get<FirebaseDatabaseService>().SetValue("users/" + user.id, user);
 			}
 		}
 		private User user;
@@ -49,8 +49,8 @@ namespace BigSlickChat
 				DependencyService.Get<FirebaseDatabaseService>().SetValue("users/" + uid, User);
 			}
 
-			DependencyService.Get<FirebaseDatabaseService>().AddValueEvent<User>("users/" + uid, OnUserValueChanged);
-			OnUserDataSet = onUserDataUpdated;
+            OnUserDataSet = onUserDataUpdated;
+            DependencyService.Get<FirebaseDatabaseService>().AddValueEvent<User>("users/" + uid, OnUserValueChanged);
 		}
 
 		private Action OnUserDataSet;
@@ -70,6 +70,14 @@ namespace BigSlickChat
 
 			ValueChangeCount++;
 		}
+
+        public void Signout()
+        {
+            DependencyService.Get<FirebaseAuthService>().SignOut();
+
+            ValueChangeCount = 0;
+            OnUserDataSet = null;
+        }
 	}
 }
 
