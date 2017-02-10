@@ -21,10 +21,14 @@ namespace BigSlickChat.iOS
 				{
 					if (error != null)
 					{
-						Debug.Write("CREATE USER ERROR " + error.ToString());
-						onErrorAction(error.LocalizedDescription);
+                        Debug.Write("CREATE USER ERROR " + error.ToString());
+
+                        if(onErrorAction != null)
+                        {                            
+                            onErrorAction(error.LocalizedDescription);
+                        }
 					}
-					else
+                    else if(onCompleteAction != null)
 					{
 						onCompleteAction();
 					}
@@ -54,15 +58,19 @@ namespace BigSlickChat.iOS
 					if (error != null)
 					{
 						Debug.Write("SIGNIN USER ERROR " + error.ToString());
-						onErrorAction(error.LocalizedDescription);
+						
+                        if(onErrorAction != null)
+                        {
+                            onErrorAction(error.LocalizedDescription);                            
+                        }
 					}
-					else
+                    else if(onCompleteAction != null)
 					{
 						onCompleteAction();
 					}
 				});
 			}
-			else
+            else if (onErrorAction != null)
 			{
 				onErrorAction("Already logged in as " + Auth.DefaultInstance.CurrentUser.Email);
 			}

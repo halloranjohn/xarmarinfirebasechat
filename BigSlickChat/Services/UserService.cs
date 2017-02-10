@@ -20,8 +20,6 @@ namespace BigSlickChat
         {
             firebaseAuthService = fbAuthService;
             firebaseDatabaseService = fbDatabaseService;
-
-            User = new User(firebaseAuthService.GetUid(), new List<string>(), "FF0000");
         }
 
 		public static UserService Instance
@@ -55,39 +53,55 @@ namespace BigSlickChat
 		{
             string uid = firebaseAuthService.GetUid();
 
-			if (isNewUser)
-			{
-                SaveUserToServer();
-			}
+            Action<User> onUserFound = (User userOnServer) => 
+            {
+                User = userOnServer;
+                onUserDataUpdated();
+            };
 
-            OnUserDataSet = onUserDataUpdated;
-            firebaseDatabaseService.AddValueEvent<User>("users/" + uid, OnUserValueChanged);
-		}
+            Action onUserMissing = () => 
+            {
+                User = new User(uid, new List<string>(), "FF0000");
+                onUserDataUpdated();
+            };
 
-		private Action OnUserDataSet;
+            firebaseDatabaseService.ChildExists(USERS_URL_PREFIX + uid, onUserFound, onUserMissing);
+
+            //OnUserDataSet = onUserDataUpdated;
+            //firebaseDatabaseService.AddValueEvent<User>(USERS_URL_PREFIX + uid, OnUserValueChanged);
+
+            //if (isNewUser)
+            //{
+            //    SaveUserToServer();
+            //}
+        }
+
+		//private Action OnUserDataSet;
 
 
-		public int ValueChangeCount { get; private set; }
+		//public int ValueChangeCount { get; private set; }
 
-		public void OnUserValueChanged(User obj)
-		{
-			user = obj;
+		//public void OnUserValueChanged(User obj)
+		//{
+		//	user = obj;
 
-			if (ValueChangeCount == 0)
-			{
-				OnUserDataSet();
-				OnUserDataSet = null;
-			}
+		//	if (ValueChangeCount == 0)
+		//	{
+		//		OnUserDataSet();
+		//		OnUserDataSet = null;
+		//	}
 
-			ValueChangeCount++;
-		}
+		//	ValueChangeCount++;
+		//}
 
         public void Signout()
         {
             firebaseAuthService.SignOut();
 
-            ValueChangeCount = 0;
-            OnUserDataSet = null;
+            user = null;
+
+            //ValueChangeCount = 0;
+            //OnUserDataSet = null;
         }
 
         public void SaveUserToServer()

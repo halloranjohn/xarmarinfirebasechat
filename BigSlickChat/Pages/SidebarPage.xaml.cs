@@ -63,6 +63,10 @@ namespace BigSlickChat
                 {
                     UserService.Instance.User.AddChatroom(cr.Id);
                     UserService.Instance.SaveUserToServer();
+
+                    InitChatroomStackLayout();
+
+                    chatroomEntry.Text = null;
                 };
 
                 ChatService.Instance.CreateChatroom(cr, onChatroomCreatedSuccess);
@@ -80,6 +84,10 @@ namespace BigSlickChat
                 {
                     UserService.Instance.User.RemoveChatroom(chatroomId);
                     UserService.Instance.SaveUserToServer();
+
+                    InitChatroomStackLayout();
+
+                    chatroomEntry.Text = null;
                 };
 
                 ChatService.Instance.RemoveChatroom(chatroomId, onChatroomRemoveSuccess);
@@ -88,8 +96,34 @@ namespace BigSlickChat
 
         void InitChatroomStackLayout()
         {
-            InitGotoChatroom1Button();
-            InitGotoChatroom2Button();
+            //InitGotoChatroom1Button();
+            //InitGotoChatroom2Button();
+
+            chatroomStack.Children.Clear();
+
+            if(UserService.Instance.User.roomIds != null)
+            {                
+                foreach(string roomTitle in UserService.Instance.User.roomIds)
+                {
+                    InitChatroomBtn(roomTitle);
+                }
+            }
+        }
+
+        void InitChatroomBtn(string roomTitle)
+        {
+            Button btn = new Button();
+            btn.Text = roomTitle;
+
+            btn.HorizontalOptions = LayoutOptions.Center;
+                      
+            btn.Clicked += (sender, e) =>          
+            {                              
+                Navigation.PopModalAsync(false);
+                Navigation.PushModalAsync(new BigSlickChatPage(roomTitle));             
+            };
+
+            chatroomStack.Children.Add(btn);
         }
 
         void InitGotoLoginButton()
@@ -109,31 +143,31 @@ namespace BigSlickChat
             };
         }
 
-		void InitGotoChatroom2Button()
-		{
-			gotoChatroom2.Text = "Goto Chatroom 2";
-			gotoChatroom2.HorizontalOptions = LayoutOptions.Center;
+		//void InitGotoChatroom2Button()
+		//{
+		//	gotoChatroom2.Text = "Goto Chatroom 2";
+		//	gotoChatroom2.HorizontalOptions = LayoutOptions.Center;
 
-			gotoChatroom2.Clicked += (sender, e) =>
-			{
-				Debug.WriteLine("NavigationStack :: " + Navigation.NavigationStack.Count);
-				Navigation.PopModalAsync(false);
-				Navigation.PushModalAsync(new BigSlickChatPage("room2"));	
-			};
-		}
+		//	gotoChatroom2.Clicked += (sender, e) =>
+		//	{
+		//		Debug.WriteLine("NavigationStack :: " + Navigation.NavigationStack.Count);
+		//		Navigation.PopModalAsync(false);
+		//		Navigation.PushModalAsync(new BigSlickChatPage("room2"));	
+		//	};
+		//}
 
-		void InitGotoChatroom1Button()
-		{
-			gotoChatroom1.Text = "Goto Chatroom 1";
-			gotoChatroom1.HorizontalOptions = LayoutOptions.Center;
+		//void InitGotoChatroom1Button()
+		//{
+		//	gotoChatroom1.Text = "Goto Chatroom 1";
+		//	gotoChatroom1.HorizontalOptions = LayoutOptions.Center;
 
-			gotoChatroom1.Clicked += (sender, e) =>
-			{
-				Debug.WriteLine("NavigationStack :: " + Navigation.NavigationStack.Count);
-				Navigation.PopModalAsync(false);
-				Navigation.PushModalAsync(new BigSlickChatPage("room1"));
-			};
-		}
+		//	gotoChatroom1.Clicked += (sender, e) =>
+		//	{
+		//		Debug.WriteLine("NavigationStack :: " + Navigation.NavigationStack.Count);
+		//		Navigation.PopModalAsync(false);
+		//		Navigation.PushModalAsync(new BigSlickChatPage("room1"));
+		//	};
+		//}
 
 		void InitBlueButton()
 		{

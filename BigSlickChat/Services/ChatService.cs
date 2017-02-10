@@ -6,7 +6,8 @@ namespace BigSlickChat
 {
     public class ChatService
     {
-        public const string ROOMS_PREFIX_URL = "rooms/";
+        public const string ROOMS_URL_PREFIX = "rooms/";
+        public const string USER_IDS_URL_SUFFIX = "/UserIds";
 
         private static ChatService instance;
         private FirebaseDatabaseService fbDatabaseService;
@@ -37,6 +38,18 @@ namespace BigSlickChat
         {
             Action<ChatroomModel> onNodeFound = (chatroomDataExisting) => 
             {
+                Action onSetValueSuccess = () =>
+                {
+                    if (onSuccess != null)
+                        onSuccess(true);
+                };
+
+                Action<string> onSetValueError = (string errorDesc) =>
+                {
+                    if (onError != null)
+                        onError(errorDesc);
+                };
+
                 //Room already exists just add users
                 foreach(string userId in chatroomDataToAdd.UserIds)
                 {
@@ -46,10 +59,7 @@ namespace BigSlickChat
                     }
                 }
 
-                if(onSuccess != null)
-                {
-                    onSuccess(false);                    
-                }
+                fbDatabaseService.SetValue(ROOMS_URL_PREFIX + chatroomDataToAdd.Id + USER_IDS_URL_SUFFIX, chatroomDataExisting.UserIds, onSetValueSuccess, onSetValueError);
             };
 
             Action onNodeMissing = () => 
@@ -66,10 +76,10 @@ namespace BigSlickChat
                         onError(errorDesc);
                 };
 
-                fbDatabaseService.SetValue(ROOMS_PREFIX_URL + chatroomDataToAdd.Id, chatroomDataToAdd, onSetValueSuccess, onSetValueError); 
+                fbDatabaseService.SetValue(ROOMS_URL_PREFIX + chatroomDataToAdd.Id, chatroomDataToAdd, onSetValueSuccess, onSetValueError); 
             };
 
-            fbDatabaseService.ChildExists(ROOMS_PREFIX_URL + chatroomDataToAdd.Id, onNodeFound, onNodeMissing);
+            fbDatabaseService.ChildExists(ROOMS_URL_PREFIX + chatroomDataToAdd.Id, onNodeFound, onNodeMissing);
         }
 
         public void RemoveChatroom(string chatroomId, Action onSuccess = null, Action<string> onError = null)
@@ -86,7 +96,7 @@ namespace BigSlickChat
                     onError(errorDesc);
             };
 
-            fbDatabaseService.RemoveValue(ROOMS_PREFIX_URL + chatroomId, onSetValueSuccess, onSetValueError);
+            fbDatabaseService.RemoveValue(ROOMS_URL_PREFIX + chatroomId, onSetValueSuccess, onSetValueError);
         }
     }
 }

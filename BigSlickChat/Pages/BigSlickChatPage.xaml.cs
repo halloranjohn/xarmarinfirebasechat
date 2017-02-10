@@ -8,6 +8,9 @@ namespace BigSlickChat
 {
 	public partial class BigSlickChatPage : ContentPage
 	{
+        public const string MESSAGES_URL_PREFIX = "messages/";
+        public const string MESSAGES_URL_SUFFIX = "/chatitems";
+
 		private string nodeKey;
 
 		private ObservableCollection<ChatItem> messages = new ObservableCollection<ChatItem>();
@@ -16,14 +19,14 @@ namespace BigSlickChat
 		{
 			InitializeComponent();
 
-			nodeKey = channelId + "/chat-items";
+            nodeKey = string.Format("{0}{1}{2}", MESSAGES_URL_PREFIX, channelId, MESSAGES_URL_SUFFIX);
 			InitStackLayout();
 			InitSidebarButton();
 			InitList();
 			InitEntry();
 
-			DependencyService.Get<FirebaseDatabaseService>().AddChildEvent<ChatItem>(nodeKey, OnChatItemAdded, OnChatItemRemoved, OnChatItemChanged);
-			DependencyService.Get<FirebaseDatabaseService>().AddValueEvent<Dictionary<string, ChatItem>>(nodeKey, OnChatItemsValueEvent);
+            DependencyService.Get<FirebaseDatabaseService>().AddChildEvent<ChatItem>(nodeKey, OnChatItemAdded, OnChatItemRemoved, OnChatItemChanged);
+            //DependencyService.Get<FirebaseDatabaseService>().AddSingleValueEvent<Dictionary<string, ChatItem>>(nodeKey, SetupChatItems);
 		}
 
 		//~BigSlickChatPage()
@@ -62,6 +65,7 @@ namespace BigSlickChat
 
 		private void InitEntry()
 		{
+            entry.Placeholder = "Type Message...";
 			entry.BackgroundColor = Color.White;
 			entry.VerticalOptions = LayoutOptions.End;
 			entry.HorizontalOptions = LayoutOptions.Fill;
@@ -130,6 +134,8 @@ namespace BigSlickChat
 			messages.Add(item);
 
 			list.ScrollTo(messages[messages.Count - 1], ScrollToPosition.End, true);
+
+            entry.Text = null;
 		}
 
 		public void OnChatItemRemoved(ChatItem item)
@@ -142,16 +148,14 @@ namespace BigSlickChat
 			// TODO: Implement
 		}
 
-		public void OnChatItemsValueEvent(Dictionary<string, ChatItem> items)
+        public void SetupChatItems(Dictionary<string, ChatItem> items)
 		{
 			foreach (ChatItem item in items.Values)
 			{
 				messages.Add(item);
 			}
 
-			DependencyService.Get<FirebaseDatabaseService>().RemoveValueEvent(nodeKey);
-
 			list.ScrollTo(messages[messages.Count - 1], ScrollToPosition.End, true);
-		}
+        }
 	}
 }
