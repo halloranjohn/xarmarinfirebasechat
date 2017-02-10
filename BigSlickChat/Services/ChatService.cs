@@ -67,7 +67,6 @@ namespace BigSlickChat
                 };
 
                 fbDatabaseService.SetValue(ROOMS_PREFIX_URL + chatroomDataToAdd.Id, chatroomDataToAdd, onSetValueSuccess, onSetValueError); 
-
             };
 
             fbDatabaseService.ChildExists(ROOMS_PREFIX_URL + chatroomDataToAdd.Id, onNodeFound, onNodeMissing);

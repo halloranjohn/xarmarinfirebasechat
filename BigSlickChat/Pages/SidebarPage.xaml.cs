@@ -59,7 +59,13 @@ namespace BigSlickChat
                 cr.Title = chatroomEntry.Text;
                 cr.UserIds = new List<string>() { DependencyService.Get<FirebaseAuthService>().GetUid() };
 
-                ChatService.Instance.CreateChatroom(cr);
+                Action<bool> onChatroomCreatedSuccess = (bool obj) => 
+                {
+                    UserService.Instance.User.AddChatroom(cr.Id);
+                    UserService.Instance.SaveUserToServer();
+                };
+
+                ChatService.Instance.CreateChatroom(cr, onChatroomCreatedSuccess);
             }
         }
 
@@ -70,7 +76,13 @@ namespace BigSlickChat
                 //logic to remove chat room
                 string chatroomId = chatroomEntry.Text;
 
-                ChatService.Instance.RemoveChatroom(chatroomId);
+                Action onChatroomRemoveSuccess = () => 
+                {
+                    UserService.Instance.User.RemoveChatroom(chatroomId);
+                    UserService.Instance.SaveUserToServer();
+                };
+
+                ChatService.Instance.RemoveChatroom(chatroomId, onChatroomRemoveSuccess);
             }
         }
 
@@ -129,7 +141,7 @@ namespace BigSlickChat
 			blueButton.HorizontalOptions = LayoutOptions.Center;
 			blueButton.Clicked += (sender, e) =>
 			{
-				SetColour("0000FF");
+				SetColor("0000FF");
 			};
 		}
 
@@ -140,15 +152,19 @@ namespace BigSlickChat
 
 			redButton.Clicked += (sender, e) =>
 			{
-				SetColour("FF0000");
+				SetColor("FF0000");
 			};
 		}
 
-		private void SetColour(string color)
+        private void SetColor(string color)
 		{
-			User user = UserService.Instance.User;
-			user.color = color;
-			UserService.Instance.User = user;
+            //User user = UserService.Instance.User;
+            //user.color = color;
+            //UserService.Instance.User = user;
+
+            UserService.Instance.User.color = color;
+            UserService.Instance.SaveUserToServer();
+
 			stackLayout.BackgroundColor = Color.FromHex(UserService.Instance.User.color);
 		}
 	}

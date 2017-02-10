@@ -16,6 +16,9 @@ namespace BigSlickChat
 
         void InitServices()
         {
+            UserService.Instance.Init(DependencyService.Get<FirebaseAuthService>(), 
+                                      DependencyService.Get<FirebaseDatabaseService>());
+            
             ChatService.Instance.Init(DependencyService.Get<FirebaseDatabaseService>());
         }
 

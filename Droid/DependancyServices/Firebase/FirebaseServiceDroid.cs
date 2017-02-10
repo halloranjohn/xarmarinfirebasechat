@@ -135,6 +135,11 @@ namespace BigSlickChat.Droid
             throw new NotImplementedException();
         }
 
+        public void RemoveValue(string nodeKey, Action onSuccess = null, Action<string> onError = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public void ChildExists<T>(string nodeKey, Action<T> onNodeFound = null, Action onNodeMissing = null)
         {
             throw new NotImplementedException();

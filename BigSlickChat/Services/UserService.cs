@@ -1,17 +1,28 @@
 ﻿using System;
-using Xamarin.Forms;
 using System.Collections.Generic;
 
 namespace BigSlickChat
 {
 	public class UserService
 	{
+        public const string USERS_URL_PREFIX = "users/";
+
 		private static UserService instance;
+
+        private FirebaseAuthService firebaseAuthService;
+        private FirebaseDatabaseService firebaseDatabaseService;
 
 		private UserService() 
 		{
-            User = new User(DependencyService.Get<FirebaseAuthService>().GetUid(), new List<string>(), "FF0000");
-		}
+        }
+
+        public void Init(FirebaseAuthService fbAuthService, FirebaseDatabaseService fbDatabaseService)
+        {
+            firebaseAuthService = fbAuthService;
+            firebaseDatabaseService = fbDatabaseService;
+
+            User = new User(firebaseAuthService.GetUid(), new List<string>(), "FF0000");
+        }
 
 		public static UserService Instance
 		{
@@ -35,22 +46,22 @@ namespace BigSlickChat
 			set
 			{
 				user = value;
-                DependencyService.Get<FirebaseDatabaseService>().SetValue("users/" + user.id, user);
+                SaveUserToServer();
 			}
 		}
 		private User user;
 
 		public void UserAuthenticated(bool isNewUser, Action onUserDataUpdated)
 		{
-			string uid = DependencyService.Get<FirebaseAuthService>().GetUid();
+            string uid = firebaseAuthService.GetUid();
 
 			if (isNewUser)
 			{
-				DependencyService.Get<FirebaseDatabaseService>().SetValue("users/" + uid, User);
+                SaveUserToServer();
 			}
 
             OnUserDataSet = onUserDataUpdated;
-            DependencyService.Get<FirebaseDatabaseService>().AddValueEvent<User>("users/" + uid, OnUserValueChanged);
+            firebaseDatabaseService.AddValueEvent<User>("users/" + uid, OnUserValueChanged);
 		}
 
 		private Action OnUserDataSet;
@@ -73,10 +84,15 @@ namespace BigSlickChat
 
         public void Signout()
         {
-            DependencyService.Get<FirebaseAuthService>().SignOut();
+            firebaseAuthService.SignOut();
 
             ValueChangeCount = 0;
             OnUserDataSet = null;
+        }
+
+        public void SaveUserToServer()
+        {
+            firebaseDatabaseService.SetValue(USERS_URL_PREFIX + user.id, User);
         }
 	}
 }

@@ -111,7 +111,7 @@ namespace BigSlickChat
 
 		public void OnUserDataSet()
 		{
-			//Navigation.PopModalAsync(false);
+			//Navigation.PopModalAsync(true);
             Navigation.PushModalAsync(new SidebarPage());
 			//Navigation.PushModalAsync(new BigSlickChatPage("room1"));
 		}

@@ -17,5 +17,25 @@ namespace BigSlickChat
             this.color = color;
         }
 
+        public void AddChatroom(string roomId)
+        {
+            if(roomIds == null)
+            {
+                roomIds = new List<string>();    
+            }
+
+            if(!roomIds.Contains(roomId))
+            {
+                roomIds.Add(roomId);
+            }
+        }
+
+        public void RemoveChatroom(string roomId)
+        {
+            if (roomIds.Contains(roomId))
+            {
+                roomIds.Remove(roomId);
+            }
+        }
 	}
 }
