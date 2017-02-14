@@ -52,8 +52,21 @@ namespace BigSlickChat.Droid
 
 			IsPlayServicesAvailable();
 
+			SendFirebaseMessage();
 			//InitFirebase();
 		}
+
+		public void SendFirebaseMessage()
+		{
+			FirebaseMessaging fm = FirebaseMessaging.GetInstance();
+			fm.Send(new RemoteMessage.Builder("248736078310" + "@gcm.googleapis.com")
+					.SetMessageId(10)
+			 	 	.AddData("my_message", "Hello World")
+			  		.AddData("my_action", "SAY_HELLO")
+					.Build());
+				
+		}
+
 
 		private void InitFirebase()
 		{
@@ -69,15 +82,15 @@ namespace BigSlickChat.Droid
 			dr.AddValueEventListener(this);
 		}
 
-		FirebaseSendTestMessages()
-		{
-			FirebaseMessaging fm = FirebaseMessaging.Instance;
-			fm.Send(new RemoteMessage.Builder(Firebase.Auth.FirebaseAuth.Instance.CurrentUser.Uid + "@gcm.googleapis.com")
-			        .SetMessageId("testID").
-			  .AddData("my_message", "Hello World")
-			  .AddData("my_action", "SAY_HELLO")
-			  .Build());
-		}
+		//FirebaseSendTestMessages()
+		//{
+		//	FirebaseMessaging fm = FirebaseMessaging.Instance;
+		//	fm.Send(new RemoteMessage.Builder(Firebase.Auth.FirebaseAuth.Instance.CurrentUser.Uid + "@gcm.googleapis.com")
+		//	        .SetMessageId("testID").
+		//	  .AddData("my_message", "Hello World")
+		//	  .AddData("my_action", "SAY_HELLO")
+		//	  .Build());
+		//}
 
 		public bool IsPlayServicesAvailable()
 		{
