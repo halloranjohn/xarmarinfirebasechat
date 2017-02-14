@@ -58,6 +58,7 @@
     </Compile>
     <Compile Include="Services\ChatService.cs" />
     <Compile Include="Models\ChatroomModel.cs" />
+    <Compile Include="Controls\FacebookLoginButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
@@ -82,6 +83,7 @@
     <Folder Include="DependancyServices\Firebase\" />
     <Folder Include="Services\" />
     <Folder Include="Pages\" />
+    <Folder Include="Controls\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Forms.2.3.1.114\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.3.1.114\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />

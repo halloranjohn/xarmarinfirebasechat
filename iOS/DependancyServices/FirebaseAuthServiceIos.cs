@@ -6,9 +6,9 @@ using Xamarin.Forms;
 
 [assembly: Dependency(typeof(BigSlickChat.iOS.FirebaseAuthServiceIos))]
 namespace BigSlickChat.iOS
-{
+{    
 	public class FirebaseAuthServiceIos : FirebaseAuthService
-	{
+	{        
 		public FirebaseAuthServiceIos()
 		{
 		}
@@ -75,6 +75,26 @@ namespace BigSlickChat.iOS
 				onErrorAction("Already logged in as " + Auth.DefaultInstance.CurrentUser.Email);
 			}
 		}
+
+        public void SignInWithFacebook(string fbAccessToken, Action onCompleteAction, Action<string> onErrorAction)
+        {
+            AuthCredential cred = FacebookAuthProvider.GetCredential(fbAccessToken);
+
+            Auth.DefaultInstance.SignIn(cred, (Firebase.Auth.User user, NSError error) => 
+            {
+                if(error != null)
+                {
+                    if(onErrorAction != null)
+                    {
+                        onErrorAction(error.Description);
+                    }
+                }    
+                else if (onCompleteAction != null)
+                {
+                    onCompleteAction();
+                }
+            });
+        }
 
 		public string GetUid()
 		{

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace BigSlickChat
 {
@@ -65,7 +66,13 @@ namespace BigSlickChat
                 onUserDataUpdated();
             };
 
-            firebaseDatabaseService.ChildExists(USERS_URL_PREFIX + uid, onUserFound, onUserMissing);
+            Action<string> onError = (errorMsg) => 
+            {
+                Debug.WriteLine(errorMsg);
+                throw new Exception();
+            };
+
+            firebaseDatabaseService.ChildExists(USERS_URL_PREFIX + uid, onUserFound, onUserMissing, onError);
 
             //OnUserDataSet = onUserDataUpdated;
             //firebaseDatabaseService.AddValueEvent<User>(USERS_URL_PREFIX + uid, OnUserValueChanged);

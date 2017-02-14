@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Xamarin.Forms;
+using System.Diagnostics;
 
 namespace BigSlickChat
 {
@@ -11,20 +12,17 @@ namespace BigSlickChat
 		{
 			InitializeComponent();
 
-            if (UserSignedIn())
-			{
-				OnAuthComplete(false);
-			}
-			else
-			{
-				InitControls();
-			}
+            InitControls();
 
+            if (UserSignedIn())
+            {
+                OnAuthComplete(false);
+            }
 		}
 
 		bool UserSignedIn()
 		{
-			return (DependencyService.Get<FirebaseAuthService>().GetUid() != null);
+            return DependencyService.Get<FirebaseAuthService>().GetUid() != null;
 		}
 
 		private void InitControls()
@@ -35,6 +33,7 @@ namespace BigSlickChat
 			InitButtonsLayout();
 			InitSignupButton();
 			InitLoginButton();
+            InitFacebookLoginButton();
 			InitSignoutButton();
 		}
 
@@ -64,16 +63,16 @@ namespace BigSlickChat
 
 		private void InitButtonsLayout()
 		{
-			buttonStackLayout.Orientation = StackOrientation.Horizontal;
+            buttonStackLayout.Padding = 10;
 			buttonStackLayout.HorizontalOptions = LayoutOptions.Center;
-			buttonStackLayout.VerticalOptions = LayoutOptions.End;
+            buttonStackLayout.VerticalOptions = LayoutOptions.Start;
 			buttonStackLayout.BackgroundColor = Color.White;
 		}
 
 		private void InitSignupButton()
 		{
 			signupButton.Text = "Signup";
-			signupButton.HorizontalOptions = LayoutOptions.Start;
+            signupButton.HorizontalOptions = LayoutOptions.Center;
 
 			signupButton.Clicked += (sender, e) =>
 			{
@@ -83,8 +82,8 @@ namespace BigSlickChat
 
 		private void InitLoginButton()
 		{
-			loginButton.Text = "Login";
-			loginButton.HorizontalOptions = LayoutOptions.End;
+			loginButton.Text = "Email Login";
+            loginButton.HorizontalOptions = LayoutOptions.Center;
 
 			loginButton.Clicked += (sender, e) =>
 			{
@@ -92,10 +91,21 @@ namespace BigSlickChat
 			};
 		}
 
+        private void InitFacebookLoginButton()
+        {
+            facebookLoginButton.Text = "Facebook Login";
+            facebookLoginButton.HorizontalOptions = LayoutOptions.Center;
+
+            facebookLoginButton.OnFacebookLoginSuccess = (token) =>
+            {
+                DependencyService.Get<FirebaseAuthService>().SignInWithFacebook(token, OnLoginCompleteAction, OnLoginErrorAction);
+            };
+        }
+
 		private void InitSignoutButton()
 		{
 			signOutButton.Text = "Logout";
-			signOutButton.HorizontalOptions = LayoutOptions.End;
+            signOutButton.HorizontalOptions = LayoutOptions.Center;
 
 			signOutButton.Clicked += (sender, e) =>
 			{

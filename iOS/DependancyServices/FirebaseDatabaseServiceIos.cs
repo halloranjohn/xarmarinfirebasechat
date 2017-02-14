@@ -6,17 +6,17 @@ using Foundation;
 using Newtonsoft.Json;
 using Xamarin.Forms;
 
-[assembly: Dependency(typeof(BigSlickChat.iOS.FirebaseServiceIos))]
+[assembly: Dependency(typeof(BigSlickChat.iOS.FirebaseDatabaseServiceIos))]
 namespace BigSlickChat.iOS
 {
-	public class FirebaseServiceIos : FirebaseDatabaseService
+	public class FirebaseDatabaseServiceIos : FirebaseDatabaseService
 	{
 		Dictionary<string, nuint> ChildRemovedEventHandles;
 		Dictionary<string, nuint> ChildChangedEventHandles;
 		Dictionary<string, nuint> ChildAddedEventHandles;
 		Dictionary<string, nuint> ValueEventHandles;
 
-		public FirebaseServiceIos()
+		public FirebaseDatabaseServiceIos()
 		{
 			ChildChangedEventHandles = new Dictionary<string, nuint>();
 			ChildRemovedEventHandles = new Dictionary<string, nuint>();
@@ -205,12 +205,13 @@ namespace BigSlickChat.iOS
 			}
 		}
 
-        void FirebaseDatabaseService.ChildExists<T>(string nodeKey, Action<T> onNodeFound, Action onNodeMissing)
+        void FirebaseDatabaseService.ChildExists<T>(string nodeKey, Action<T> onNodeFound, Action onNodeMissing, Action<string> onError)
         {
             DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
 
             DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
-            nodeRef.ObserveSingleEvent(DataEventType.Value, (snapshot) =>
+
+            DatabaseQueryUpdateHandler onQueryComplete = (DataSnapshot snapshot) => 
             {
                 if (snapshot.Exists && onNodeFound != null)
                 {
@@ -221,11 +222,21 @@ namespace BigSlickChat.iOS
                     T item = JsonConvert.DeserializeObject<T>(itemDictString);
                     onNodeFound(item);
                 }
-                else if(onNodeMissing != null)
+                else if (onNodeMissing != null)
                 {
                     onNodeMissing();
                 }
-            });
+            };
+
+            DatabaseQueryCancelHandler onQueryError = (NSError error) => 
+            {
+                if(onError != null)
+                {
+                    onError(error.Description);
+                }
+            };
+
+            nodeRef.ObserveSingleEvent(DataEventType.Value, onQueryComplete, onQueryError);
         }
 	}
 

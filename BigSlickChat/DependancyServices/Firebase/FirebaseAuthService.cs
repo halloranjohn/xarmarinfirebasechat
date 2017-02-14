@@ -6,7 +6,8 @@ namespace BigSlickChat
 	{
 		void CreateUser(string username, string password, Action onCompleteAction = null, Action<string> onErrorAction = null);
 		void SignIn(string username, string password, Action onCompleteAction = null, Action<string> onErrorAction = null);
-		void SignOut();
+        void SignInWithFacebook(string fbAccessToken, Action onCompleteAction = null, Action<string> onErrorAction = null);
+        void SignOut();
 		string GetUid();
 	}
 }

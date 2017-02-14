@@ -140,7 +140,7 @@ namespace BigSlickChat.Droid
             throw new NotImplementedException();
         }
 
-        public void ChildExists<T>(string nodeKey, Action<T> onNodeFound = null, Action onNodeMissing = null)
+        public void ChildExists<T>(string nodeKey, Action<T> onNodeFound = null, Action onNodeMissing = null, Action<string> onError = null)
         {
             throw new NotImplementedException();
         }
