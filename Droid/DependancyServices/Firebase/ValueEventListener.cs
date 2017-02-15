@@ -23,23 +23,31 @@ namespace BigSlickChat.Droid
 
 		void IValueEventListener.OnDataChange(DataSnapshot snapshot)
 		{
-			
-			HashMap dataHashMap = snapshot.Value.JavaCast<HashMap>();
-			Gson gson = new GsonBuilder().Create();
-			string chatItemDaataString = gson.ToJson(dataHashMap);
-
-			// Try to deserialize :
-			try
+			if (snapshot.Exists() && snapshot.HasChildren)
 			{
-				T chatItems = JsonConvert.DeserializeObject<T>(chatItemDaataString);
-				action(chatItems);
+                if (action != null)
+                {
+                    HashMap dataHashMap = snapshot.Value.JavaCast<HashMap>();
+                    Gson gson = new GsonBuilder().Create();
+                    string chatItemDaataString = gson.ToJson(dataHashMap);
+                    
+                    // Try to deserialize :
+                    try
+                    {
+                        T chatItems = JsonConvert.DeserializeObject<T>(chatItemDaataString);
+                        action(chatItems);                                                                  
+                    }
+                    catch
+                    {
+                        
+                    }                    
+                }
 			}
-			catch
+            else if(action != null)
 			{
-				
+				T item = default(T);
+				action(item);
 			}
-
-
 		}
 	}
 }

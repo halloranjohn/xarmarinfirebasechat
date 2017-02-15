@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace BigSlickChat
@@ -118,13 +119,19 @@ namespace BigSlickChat
             btn.HorizontalOptions = LayoutOptions.Center;
                       
             btn.Clicked += (sender, e) =>          
-            {                              
-                Navigation.PopModalAsync(false);
-                Navigation.PushModalAsync(new BigSlickChatPage(roomTitle));             
+            {
+				ChangePage(new BigSlickChatPage(roomTitle));
+                 
             };
 
             chatroomStack.Children.Add(btn);
         }
+
+		private async Task ChangePage(Page newPage)
+		{
+			await Navigation.PushAsync(newPage);
+			//Navigation.RemovePage(this);
+		}
 
         void InitGotoLoginButton()
         {
@@ -138,8 +145,7 @@ namespace BigSlickChat
                 UserService.Instance.Signout();
                 //DependencyService.Get<FirebaseAuthService>().SignOut();
 
-                Navigation.PopModalAsync(false);
-                Navigation.PushModalAsync(new LoginPage());
+                ChangePage(new LoginPage());
             };
         }
 

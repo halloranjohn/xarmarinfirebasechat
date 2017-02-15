@@ -11,6 +11,6 @@ namespace BigSlickChat
         void SetValue(string nodeKey, object obj, Action onSuccess = null, Action<string> onError = null);
 		void SetChildValueByAutoId(string nodeKey, object obj, Action onSuccess = null, Action<string> onError = null);
         void RemoveValue(string nodeKey, Action onSuccess = null, Action<string> onError = null);
-        void ChildExists<T>(string nodeKey, Action<T> onNodeFound = null, Action onNodeMissing = null, Action<string> onError = null);
+        //void ChildExists<T>(string nodeKey, Action<T> onNodeFound = null, Action onNodeMissing = null, Action<string> onError = null);
 	}
 }

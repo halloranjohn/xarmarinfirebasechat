@@ -7,16 +7,16 @@ using Java.Util;
 using Newtonsoft.Json;
 using Xamarin.Forms;
 
-[assembly: Dependency(typeof(BigSlickChat.Droid.FirebaseServiceDroid))]
+[assembly: Dependency(typeof(BigSlickChat.Droid.FirebaseDatabaseServiceDroid))]
 namespace BigSlickChat.Droid
 {
-	public class FirebaseServiceDroid : FirebaseDatabaseService
+	public class FirebaseDatabaseServiceDroid : FirebaseDatabaseService
 	{
 		Dictionary<string, DatabaseReference> DatabaseReferences;
 		Dictionary<string, IValueEventListener> ValueEventListeners;
 		Dictionary<string, IChildEventListener> ChildEventListeners;
 
-		public FirebaseServiceDroid()
+		public FirebaseDatabaseServiceDroid()
 		{
 			DatabaseReferences = new Dictionary<string, DatabaseReference>();
 			ValueEventListeners = new Dictionary<string, IValueEventListener>();
@@ -37,7 +37,7 @@ namespace BigSlickChat.Droid
 			}
 		}
 
-		public void ObserveValueEvent<T>(string nodeKey, Action<T> action)
+		public void AddValueEvent<T>(string nodeKey, Action<T> action)
 		{
 			DatabaseReference dr = GetDatabaseReference(nodeKey);
 
@@ -48,16 +48,30 @@ namespace BigSlickChat.Droid
 
 				ValueEventListeners.Add(nodeKey, listener);
 			}
-
 		}
 
-		public void ObserveChildEvent<T>(string nodeKey, Action<T> action)
+		public void AddSingleValueEvent<T>(string nodeKey, Action<T> action)
 		{
 			DatabaseReference dr = GetDatabaseReference(nodeKey);
 
 			if (dr != null)
 			{
-				ChildEventListener<T> listener = new ChildEventListener<T>(action);
+				ValueEventListener<T> listener = new ValueEventListener<T>(action);
+				dr.AddListenerForSingleValueEvent(listener);
+
+
+				ValueEventListeners.Add(nodeKey, listener);
+			}
+
+		}
+
+		public void AddChildEvent<T>(string nodeKey, Action<T> OnChildAdded, Action<T> OnChildRemoved, Action<T> OnChildUpdated)
+		{
+			DatabaseReference dr = GetDatabaseReference(nodeKey);
+
+			if (dr != null)
+			{
+				ChildEventListener<T> listener = new ChildEventListener<T>(OnChildAdded);
 				dr.AddChildEventListener(listener);
 
 				ChildEventListeners.Add(nodeKey, listener);
@@ -74,7 +88,7 @@ namespace BigSlickChat.Droid
 			ValueEventListeners.Add(nodeKey, listener);
 		}
 
-		public void DatabaseReferenceSetValue(string nodeKey, object obj)
+		public void SetChildValueByAutoId(string nodeKey, object obj, Action onSuccess = null, Action<string> onError = null)
 		{
 			DatabaseReference dr = FirebaseDatabase.Instance.GetReference(nodeKey);
 
@@ -90,60 +104,53 @@ namespace BigSlickChat.Droid
 			}
 		}
 
-		public void RemoveValueEvent<T>(string nodeKey)
+		public void SetValue(string nodeKey, object obj, Action onSuccess = null, Action<string> onError = null)
+		{
+			DatabaseReference dr = FirebaseDatabase.Instance.GetReference(nodeKey);
+
+			if (dr != null)
+			{
+				string objJsonString = JsonConvert.SerializeObject(obj);
+
+				Gson gson = new GsonBuilder().SetPrettyPrinting().Create();
+				HashMap dataHashMap = new HashMap();
+				Java.Lang.Object jsonObj = gson.FromJson(objJsonString, dataHashMap.Class);
+				dataHashMap = jsonObj.JavaCast<HashMap>();
+				dr.SetValue(dataHashMap);
+			}
+		}
+
+		public void RemoveValueEvent(string nodeKey)
 		{
 			DatabaseReference dr = DatabaseReferences[nodeKey];
 
 			if (dr != null)
 			{
 				dr.RemoveEventListener(ValueEventListeners[nodeKey]);
+				ValueEventListeners.Remove(nodeKey);
 			}
 		}
 
-        public void AddChildEvent<T>(string nodeKey, Action<T> OnChildAdded = null, Action<T> OnChildRemoved = null, Action<T> OnChildChanged = null)
-        {
-            throw new NotImplementedException();
-        }
+		public void RemoveChildEvent(string nodeKey)
+		{
+			DatabaseReference dr = DatabaseReferences[nodeKey];
 
-        public void AddValueEvent<T>(string nodeKey, Action<T> OnValueEvent = null)
-        {
-            throw new NotImplementedException();
-        }
+			if (dr != null)
+			{
+				dr.RemoveEventListener(ChildEventListeners[nodeKey]);
+				ChildEventListeners.Remove(nodeKey);
+			}
+		}
 
-        public void AddSingleValueEvent<T>(string nodeKey, Action<T> OnValueEvent = null)
-        {
-            throw new NotImplementedException();
-        }
+		public void RemoveValue(string nodeKey, Action onSuccess = null, Action<string> onError = null)
+		{
+			DatabaseReference dr = FirebaseDatabase.Instance.GetReference(nodeKey);
 
-        public void RemoveValueEvent(string nodeKey)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveChildEvent(string nodeKey)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetValue(string nodeKey, object obj, Action onSuccess = null, Action<string> onError = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetChildValueByAutoId(string nodeKey, object obj, Action onSuccess = null, Action<string> onError = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveValue(string nodeKey, Action onSuccess = null, Action<string> onError = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ChildExists<T>(string nodeKey, Action<T> onNodeFound = null, Action onNodeMissing = null, Action<string> onError = null)
-        {
-            throw new NotImplementedException();
-        }
-    }
+			if (dr != null)
+			{
+				dr.RemoveValue();
+			}
+		}
+	}
 
 }

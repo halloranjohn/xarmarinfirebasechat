@@ -146,15 +146,23 @@ namespace BigSlickChat.iOS
 
             nodeRef.ObserveSingleEvent(DataEventType.Value, (snapshot) =>
             {
-                if (snapshot.HasChildren && action != null)
-                {
-                    NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
-                    NSError error = null;
-                    string itemDictString = NSJsonSerialization.Serialize(itemDict, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
-
-                    T item = JsonConvert.DeserializeObject<T>(itemDictString);
-                    action(item);
-                }
+				if (snapshot.Exists && snapshot.HasChildren)
+				{
+                    if(action != null)
+                    {
+                        NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
+                        NSError error = null;
+                        string itemDictString = NSJsonSerialization.Serialize(itemDict, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
+                        
+                        T item = JsonConvert.DeserializeObject<T>(itemDictString);
+                        action(item);                        
+                    }
+				}
+				else if(action != null)
+				{
+					T item = default(T);
+					action(item);
+				}
             });
         }
 
@@ -166,13 +174,21 @@ namespace BigSlickChat.iOS
 
 			nuint handleReference = nodeRef.ObserveEvent(DataEventType.Value, (snapshot) =>
 			{
-				if (snapshot.HasChildren && action != null)
+				if (snapshot.Exists && snapshot.HasChildren)
 				{
-					NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
-					NSError error = null;
-					string itemDictString = NSJsonSerialization.Serialize(itemDict, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
-
-					T item = JsonConvert.DeserializeObject<T>(itemDictString);
+                    if(action != null)
+                    {
+                        NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
+                        NSError error = null;
+                        string itemDictString = NSJsonSerialization.Serialize(itemDict, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
+                        
+                        T item = JsonConvert.DeserializeObject<T>(itemDictString);
+                        action(item);                        
+                    }
+				}
+                else if(action != null)
+				{
+					T item = default(T);
 					action(item);
 				}
 			});
@@ -205,39 +221,41 @@ namespace BigSlickChat.iOS
 			}
 		}
 
-        void FirebaseDatabaseService.ChildExists<T>(string nodeKey, Action<T> onNodeFound, Action onNodeMissing, Action<string> onError)
-        {
-            DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
+        //void FirebaseDatabaseService.ChildExists<T>(string nodeKey, Action<T> onNodeFound, Action onNodeMissing, Action<string> onError)
+        //{
+        //    DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
 
-            DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
+        //    DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
+        //    nodeRef.ObserveSingleEvent(DataEventType.Value, (snapshot) =>
+        //    {
+        //        if (snapshot.Exists)
+        //        {
+        //            if(onNodeFound != null)
+        //            {
+        //                NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
+        //                NSError error = null;
+        //                string itemDictString = NSJsonSerialization.Serialize(itemDict, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
+                        
+        //                T item = JsonConvert.DeserializeObject<T>(itemDictString);
+        //                onNodeFound(item);                        
+        //            }
+        //        }
+        //        else if (onNodeMissing != null)
+        //        {
+        //            onNodeMissing();
+        //        }
+        //    };
 
-            DatabaseQueryUpdateHandler onQueryComplete = (DataSnapshot snapshot) => 
-            {
-                if (snapshot.Exists && onNodeFound != null)
-                {
-                    NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
-                    NSError error = null;
-                    string itemDictString = NSJsonSerialization.Serialize(itemDict, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
+        //    DatabaseQueryCancelHandler onQueryError = (NSError error) => 
+        //    {
+        //        if(onError != null)
+        //        {
+        //            onError(error.Description);
+        //        }
+        //    };
 
-                    T item = JsonConvert.DeserializeObject<T>(itemDictString);
-                    onNodeFound(item);
-                }
-                else if (onNodeMissing != null)
-                {
-                    onNodeMissing();
-                }
-            };
-
-            DatabaseQueryCancelHandler onQueryError = (NSError error) => 
-            {
-                if(onError != null)
-                {
-                    onError(error.Description);
-                }
-            };
-
-            nodeRef.ObserveSingleEvent(DataEventType.Value, onQueryComplete, onQueryError);
-        }
+        //    nodeRef.ObserveSingleEvent(DataEventType.Value, onQueryComplete, onQueryError);
+        //}
 	}
 
 

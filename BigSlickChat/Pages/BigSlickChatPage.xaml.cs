@@ -39,7 +39,7 @@ namespace BigSlickChat
 			base.OnDisappearing();
 
 			DependencyService.Get<FirebaseDatabaseService>().RemoveChildEvent(nodeKey);
-			DependencyService.Get<FirebaseDatabaseService>().RemoveValueEvent(nodeKey);
+			//DependencyService.Get<FirebaseDatabaseService>().RemoveValueEvent(nodeKey);
 		}
 
 		private void InitStackLayout()
@@ -58,9 +58,16 @@ namespace BigSlickChat
 
 			sidebarButton.Clicked += (sender, e) =>
 			{
-				Navigation.PopModalAsync(false);
-				Navigation.PushModalAsync(new SidebarPage());
+				Navigation.PopAsync();
+				//ChangePage(new SidebarPage());
 			};
+		}
+
+		private async Task ChangePage(Page newPage)
+		{
+			await Navigation.PushAsync(newPage);
+			Debug.WriteLine("DODODOD IT");
+			Navigation.RemovePage(this);
 		}
 
 		private void InitEntry()
