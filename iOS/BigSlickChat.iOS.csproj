@@ -123,6 +123,9 @@
     <Reference Include="Facebook">
       <HintPath>..\packages\Xamarin.Facebook.iOS.4.18.0.1\lib\Xamarin.iOS10\Facebook.dll</HintPath>
     </Reference>
+    <Reference Include="Firebase.CloudMessaging">
+      <HintPath>..\packages\Xamarin.Firebase.iOS.CloudMessaging.1.2.1.1\lib\Xamarin.iOS10\Firebase.CloudMessaging.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BigSlickChat\BigSlickChat.csproj">
@@ -172,4 +175,5 @@
   <Import Project="..\packages\Xamarin.Firebase.iOS.Analytics.3.6.0\build\Xamarin.Firebase.iOS.Analytics.targets" Condition="Exists('..\packages\Xamarin.Firebase.iOS.Analytics.3.6.0\build\Xamarin.Firebase.iOS.Analytics.targets')" />
   <Import Project="..\packages\Xamarin.Firebase.iOS.Database.3.1.1\build\Xamarin.Firebase.iOS.Database.targets" Condition="Exists('..\packages\Xamarin.Firebase.iOS.Database.3.1.1\build\Xamarin.Firebase.iOS.Database.targets')" />
   <Import Project="..\packages\Xamarin.Firebase.iOS.Auth.3.0.6.1\build\Xamarin.Firebase.iOS.Auth.targets" Condition="Exists('..\packages\Xamarin.Firebase.iOS.Auth.3.0.6.1\build\Xamarin.Firebase.iOS.Auth.targets')" />
+  <Import Project="..\packages\Xamarin.Firebase.iOS.CloudMessaging.1.2.1.1\build\Xamarin.Firebase.iOS.CloudMessaging.targets" Condition="Exists('..\packages\Xamarin.Firebase.iOS.CloudMessaging.1.2.1.1\build\Xamarin.Firebase.iOS.CloudMessaging.targets')" />
 </Project>

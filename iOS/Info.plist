@@ -7,7 +7,7 @@
 	<key>CFBundleName</key>
 	<string>BigSlickChat</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.bigslickchat.app.bigslickchat</string>
+	<string>com.bigslickchat.app</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
@@ -15,7 +15,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>MinimumOSVersion</key>
-	<string>8.0</string>
+	<string>10.1</string>
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>1</integer>
@@ -44,12 +44,12 @@
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>CFBundleURLTypes</key>
 	<array>
-	  <dict>
-	  <key>CFBundleURLSchemes</key>
-	  <array>
-		<string>fb489637687791123</string>
-	  </array>
-	  </dict>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb489637687791123</string>
+			</array>
+		</dict>
 	</array>
 	<key>FacebookAppID</key>
 	<string>489637687791123</string>
@@ -57,10 +57,10 @@
 	<string>Herpy_Paul</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-	  <string>fbapi</string>
-	  <string>fb-messenger-api</string>
-	  <string>fbauth2</string>
-	  <string>fbshareextension</string>
+		<string>fbapi</string>
+		<string>fb-messenger-api</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
 	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
@@ -89,5 +89,9 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>
