@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigSlickChat.iOS", "iOS\Big
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigSlickChat.Droid", "Droid\BigSlickChat.Droid.csproj", "{5A229CDE-F513-48F7-B8CA-66E71B874CAB}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Com.OneSignal", "..\..\..\Users\halloranjohn\Downloads\OneSignal-Xamarin-SDK-2.1.1\SDK\Common\Com.OneSignal\Com.OneSignal\Com.OneSignal.shproj", "{979CB250-E367-491F-9D33-F96B4D6EA8A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
