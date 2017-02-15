@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace BigSlickChat
@@ -111,9 +111,13 @@ namespace BigSlickChat
 
 		public void OnUserDataSet()
 		{
-			//Navigation.PopModalAsync(true);
-            Navigation.PushModalAsync(new SidebarPage());
-			//Navigation.PushModalAsync(new BigSlickChatPage("room1"));
+			ChangePage(new SidebarPage());
+		}
+
+		private async Task ChangePage(Page newPage)
+		{
+			await Navigation.PushAsync(newPage);
+			//Navigation.RemovePage(this);
 		}
 
 		void OnSignupErrorAction(string obj)

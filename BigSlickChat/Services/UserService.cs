@@ -53,19 +53,35 @@ namespace BigSlickChat
 		{
             string uid = firebaseAuthService.GetUid();
 
-            Action<User> onUserFound = (User userOnServer) => 
-            {
-                User = userOnServer;
-                onUserDataUpdated();
-            };
+            //Action<User> onUserFound = (User userOnServer) => 
+            //{
+            //    User = userOnServer;
+            //    onUserDataUpdated();
+            //};
 
-            Action onUserMissing = () => 
-            {
-                User = new User(uid, new List<string>(), "FF0000");
-                onUserDataUpdated();
-            };
+            //Action onUserMissing = () => 
+            //{
+            //    User = new User(uid, new List<string>(), "FF0000");
+            //    onUserDataUpdated();
+            //};
 
-            firebaseDatabaseService.ChildExists(USERS_URL_PREFIX + uid, onUserFound, onUserMissing);
+			Action<User> onValueEvent = (User obj) => 
+			{
+				if (obj == null)
+				{
+					User = new User(uid, new List<string>(), "FF0000");
+					onUserDataUpdated();
+				}
+				else
+				{
+					user = obj;
+					onUserDataUpdated();
+				}
+
+			};
+
+			firebaseDatabaseService.AddSingleValueEvent(USERS_URL_PREFIX + uid, onValueEvent);
+            //firebaseDatabaseService.ChildExists(USERS_URL_PREFIX + uid, onUserFound, onUserMissing);
 
             //OnUserDataSet = onUserDataUpdated;
             //firebaseDatabaseService.AddValueEvent<User>(USERS_URL_PREFIX + uid, OnUserValueChanged);

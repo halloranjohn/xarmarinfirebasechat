@@ -146,15 +146,20 @@ namespace BigSlickChat.iOS
 
             nodeRef.ObserveSingleEvent(DataEventType.Value, (snapshot) =>
             {
-                if (snapshot.HasChildren && action != null)
-                {
-                    NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
-                    NSError error = null;
-                    string itemDictString = NSJsonSerialization.Serialize(itemDict, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
+				if (snapshot.Exists && snapshot.HasChildren && action != null)
+				{
+					NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
+					NSError error = null;
+					string itemDictString = NSJsonSerialization.Serialize(itemDict, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
 
-                    T item = JsonConvert.DeserializeObject<T>(itemDictString);
-                    action(item);
-                }
+					T item = JsonConvert.DeserializeObject<T>(itemDictString);
+					action(item);
+				}
+				else
+				{
+					T item = default(T);
+					action(item);
+				}
             });
         }
 
@@ -166,13 +171,18 @@ namespace BigSlickChat.iOS
 
 			nuint handleReference = nodeRef.ObserveEvent(DataEventType.Value, (snapshot) =>
 			{
-				if (snapshot.HasChildren && action != null)
+				if (snapshot.Exists && snapshot.HasChildren && action != null)
 				{
 					NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
 					NSError error = null;
 					string itemDictString = NSJsonSerialization.Serialize(itemDict, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
 
 					T item = JsonConvert.DeserializeObject<T>(itemDictString);
+					action(item);
+				}
+				else
+				{
+					T item = default(T);
 					action(item);
 				}
 			});
@@ -205,28 +215,28 @@ namespace BigSlickChat.iOS
 			}
 		}
 
-        void FirebaseDatabaseService.ChildExists<T>(string nodeKey, Action<T> onNodeFound, Action onNodeMissing)
-        {
-            DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
+        //void FirebaseDatabaseService.ChildExists<T>(string nodeKey, Action<T> onNodeFound, Action onNodeMissing)
+        //{
+        //    DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
 
-            DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
-            nodeRef.ObserveSingleEvent(DataEventType.Value, (snapshot) =>
-            {
-                if (snapshot.Exists && onNodeFound != null)
-                {
-                    NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
-                    NSError error = null;
-                    string itemDictString = NSJsonSerialization.Serialize(itemDict, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
+        //    DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
+        //    nodeRef.ObserveSingleEvent(DataEventType.Value, (snapshot) =>
+        //    {
+        //        if (snapshot.Exists && onNodeFound != null)
+        //        {
+        //            NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
+        //            NSError error = null;
+        //            string itemDictString = NSJsonSerialization.Serialize(itemDict, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
 
-                    T item = JsonConvert.DeserializeObject<T>(itemDictString);
-                    onNodeFound(item);
-                }
-                else if(onNodeMissing != null)
-                {
-                    onNodeMissing();
-                }
-            });
-        }
+        //            T item = JsonConvert.DeserializeObject<T>(itemDictString);
+        //            onNodeFound(item);
+        //        }
+        //        else if(onNodeMissing != null)
+        //        {
+        //            onNodeMissing();
+        //        }
+        //    });
+        //}
 	}
 
 

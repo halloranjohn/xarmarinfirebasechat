@@ -36,51 +36,41 @@ namespace BigSlickChat
 
         public void CreateChatroom(ChatroomModel chatroomDataToAdd, Action<bool> onSuccess = null, Action<string> onError = null)
         {
-            Action<ChatroomModel> onNodeFound = (chatroomDataExisting) => 
-            {
-                Action onSetValueSuccess = () =>
-                {
-                    if (onSuccess != null)
-                        onSuccess(true);
-                };
+			Action<ChatroomModel> onValueEvent = (ChatroomModel chatroomDataExisting) =>
+			{
+				Action onSetValueSuccess = () =>
+					{
+						if (onSuccess != null)
+							onSuccess(true);
+					};
 
-                Action<string> onSetValueError = (string errorDesc) =>
-                {
-                    if (onError != null)
-                        onError(errorDesc);
-                };
+				Action<string> onSetValueError = (string errorDesc) =>
+				{
+					if (onError != null)
+						onError(errorDesc);
+				};
 
-                //Room already exists just add users
-                foreach(string userId in chatroomDataToAdd.UserIds)
-                {
-                    if(!chatroomDataExisting.UserIds.Contains(userId))
-                    {
-                        chatroomDataExisting.UserIds.Add(userId);
-                    }
-                }
+				if (chatroomDataExisting == null)
+				{
+					fbDatabaseService.SetValue(ROOMS_URL_PREFIX + chatroomDataToAdd.Id, chatroomDataToAdd, onSetValueSuccess, onSetValueError);
+				}
+				else
+				{
+					//Room already exists just add users
+					foreach (string userId in chatroomDataToAdd.UserIds)
+					{
+						if (!chatroomDataExisting.UserIds.Contains(userId))
+						{
+							chatroomDataExisting.UserIds.Add(userId);
+						}
+					}
 
-                fbDatabaseService.SetValue(ROOMS_URL_PREFIX + chatroomDataToAdd.Id + USER_IDS_URL_SUFFIX, chatroomDataExisting.UserIds, onSetValueSuccess, onSetValueError);
-            };
+					fbDatabaseService.SetValue(ROOMS_URL_PREFIX + chatroomDataToAdd.Id + USER_IDS_URL_SUFFIX, chatroomDataExisting.UserIds, onSetValueSuccess, onSetValueError);
+				}
+			};
 
-            Action onNodeMissing = () => 
-            {          
-                Action onSetValueSuccess = () => 
-                {
-                    if (onSuccess != null)
-                        onSuccess(true);
-                };
-
-                Action<string> onSetValueError = (string errorDesc) => 
-                {
-                    if (onError != null)
-                        onError(errorDesc);
-                };
-
-                fbDatabaseService.SetValue(ROOMS_URL_PREFIX + chatroomDataToAdd.Id, chatroomDataToAdd, onSetValueSuccess, onSetValueError); 
-            };
-
-            fbDatabaseService.ChildExists(ROOMS_URL_PREFIX + chatroomDataToAdd.Id, onNodeFound, onNodeMissing);
-        }
+			fbDatabaseService.AddSingleValueEvent(ROOMS_URL_PREFIX + chatroomDataToAdd.Id, onValueEvent);
+		}
 
         public void RemoveChatroom(string chatroomId, Action onSuccess = null, Action<string> onError = null)
         {
