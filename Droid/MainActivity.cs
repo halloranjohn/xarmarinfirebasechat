@@ -14,6 +14,8 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using Java.Util;
 using GoogleGson;
+using Xamarin.Facebook;
+using Xamarin.Facebook.AppEvents;
 
 namespace BigSlickChat.Droid 
 { 
@@ -22,6 +24,9 @@ namespace BigSlickChat.Droid
 	{
 		protected override void OnCreate(Bundle bundle)
 		{
+            FacebookSdk.SdkInitialize(Android.App.Application.Context);
+            AppEventsLogger.ActivateApp(this);
+
 			TabLayoutResource = Resource.Layout.Tabbar;
 			ToolbarResource = Resource.Layout.Toolbar;
 
