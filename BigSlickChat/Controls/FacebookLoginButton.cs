@@ -21,5 +21,19 @@ namespace BigSlickChat
                 readPermissions = value;
             }
         }
+
+        private string[] writePermissions = null; //new string[] { "publish_actions" };
+
+        public string[] WritePermissions
+        {
+            get
+            {
+                return writePermissions;
+            }
+            set
+            {
+                writePermissions = value;
+            }
+        }
     }
 }

@@ -4217,6 +4217,9 @@ namespace BigSlickChat.Droid
 			// aapt resource value: 0x7f0b0000
 			public const int accept = 2131427328;
 			
+			// aapt resource value: 0x7f0b0076
+			public const int app_name = 2131427446;
+			
 			// aapt resource value: 0x7f0b002f
 			public const int appbar_scrolling_view_behavior = 2131427375;
 			

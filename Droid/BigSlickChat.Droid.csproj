@@ -27,6 +27,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>None</AndroidLinkMode>
+    <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -179,6 +180,7 @@
     <Compile Include="DependancyServices\Firebase\ValueEventListener.cs" />
     <Compile Include="DependancyServices\Firebase\ChildEventListener.cs" />
     <Compile Include="DependancyServices\FirebaseAuthServiceDroid.cs" />
+    <Compile Include="CustomRenderers\FacebookLoginButtonRendererAndroid.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -202,6 +204,7 @@
   <ItemGroup>
     <Folder Include="DependancyServices\" />
     <Folder Include="DependancyServices\Firebase\" />
+    <Folder Include="CustomRenderers\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookandroid">

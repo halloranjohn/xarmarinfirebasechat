@@ -39,6 +39,16 @@ namespace BigSlickChat.Droid
 			//InitFirebase();
 		}
 
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+
+            if(FacebookLoginButtonRendererAndroid.fbCallbackMgr != null)
+            {
+                FacebookLoginButtonRendererAndroid.fbCallbackMgr.OnActivityResult(requestCode, (int)resultCode, data);                
+            }
+        }
+
 		private void InitFirebase()
 		{
 			//FirebaseOptions.Builder builder = new FirebaseOptions.Builder();

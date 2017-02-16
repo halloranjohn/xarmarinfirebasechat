@@ -1,5 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <string name="facebook_app_id">489637687791123</string>
 	<string name="fb_login_protocol_scheme">fb489637687791123</string>
+	<string name="app_name">BigSlickChat</string>
 </resources>
