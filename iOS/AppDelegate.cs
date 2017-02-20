@@ -7,6 +7,7 @@ using Firebase.Database;
 using Foundation;
 using Newtonsoft.Json;
 using UIKit;
+using Com.OneSignal;
 
 namespace BigSlickChat.iOS
 {
@@ -23,6 +24,8 @@ namespace BigSlickChat.iOS
 
 			//InitFirebase();
 
+			OneSignal.Current.StartInit("02860e0a-f3ba-421c-9cb9-5c3a3d69d03e").EndInit();
+			
 			return base.FinishedLaunching(app, options);
 		}
 

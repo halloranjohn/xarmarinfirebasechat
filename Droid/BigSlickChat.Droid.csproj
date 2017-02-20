@@ -134,6 +134,9 @@
     <Reference Include="Xamarin.Firebase.Auth">
       <HintPath>..\packages\Xamarin.Firebase.Auth.42.1001.0\lib\MonoAndroid70\Xamarin.Firebase.Auth.dll</HintPath>
     </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Gcm">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Gcm.27.0.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Gcm.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BigSlickChat\BigSlickChat.csproj">

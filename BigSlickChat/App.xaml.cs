@@ -1,5 +1,6 @@
 ﻿using System;
 using Xamarin.Forms;
+using Com.OneSignal;
 
 namespace BigSlickChat
 {
@@ -13,6 +14,8 @@ namespace BigSlickChat
 
 			MainPage = new NavigationPage(new LoginPage());
 			//MainPage = new LoginPage();
+
+			OneSignal.Current.StartInit("02860e0a-f3ba-421c-9cb9-5c3a3d69d03e").EndInit();
 		}
 
         void InitServices()
