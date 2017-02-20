@@ -17,6 +17,7 @@
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
     <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
+    <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -180,7 +181,9 @@
     <Compile Include="DependancyServices\Firebase\ValueEventListener.cs" />
     <Compile Include="DependancyServices\Firebase\ChildEventListener.cs" />
     <Compile Include="DependancyServices\FirebaseAuthServiceDroid.cs" />
-    <Compile Include="CustomRenderers\FacebookLoginButtonRendererAndroid.cs" />
+    <Compile Include="Facebook\FacebookActivity.cs" />
+    <Compile Include="Facebook\FacebookCallback.cs" />
+    <Compile Include="Facebook\FacebookLoginButtonRendererAndroid.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -205,6 +208,7 @@
     <Folder Include="DependancyServices\" />
     <Folder Include="DependancyServices\Firebase\" />
     <Folder Include="CustomRenderers\" />
+    <Folder Include="Facebook\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="facebookandroid">
