@@ -164,6 +164,7 @@
     <Compile Include="DependancyServices\Firebase\ChildEventListener.cs" />
     <Compile Include="DependancyServices\FirebaseAuthServiceDroid.cs" />
     <Compile Include="OneSignalAndroid.cs" />
+    <Compile Include="DependancyServices\OneSignalServiceDroid.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
