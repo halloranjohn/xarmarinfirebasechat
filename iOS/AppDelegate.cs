@@ -29,6 +29,22 @@ namespace BigSlickChat.iOS
 			return base.FinishedLaunching(app, options);
 		}
 
+		[Export("oneSignalApplicationDidBecomeActive:")]
+		public void OneSignalApplicationDidBecomeActive(UIApplication application)
+		{
+			Debug.WriteLine("OneSignalApplicationDidBecomeActive");
+
+			OnActivated(application);
+		}
+
+		[Export("oneSignalApplicationWillResignActive:")]
+		public void OneSignalApplicationWillResignActive(UIApplication application)
+		{
+			Debug.WriteLine("OneSignalApplicationWillResignActive");
+
+			OnResignActivation(application);
+		}
+
 		//private void InitFirebase()
 		//{
 		//	Firebase.Analytics.App.Configure();
