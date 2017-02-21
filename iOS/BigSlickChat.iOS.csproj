@@ -74,7 +74,7 @@
     <CodesignKey>iPhone Developer</CodesignKey>
     <DeviceSpecificBuild>true</DeviceSpecificBuild>
     <MtouchDebug>true</MtouchDebug>
-    <MtouchFastDev>true</MtouchFastDev>
+    <MtouchFastDev>false</MtouchFastDev>
     <MtouchUseSGen>true</MtouchUseSGen>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
     <MtouchFloat32>true</MtouchFloat32>
@@ -143,6 +143,7 @@
   <ItemGroup>
     <Folder Include="Resources\" />
     <Folder Include="DependancyServices\" />
+    <Folder Include="DependancyServices\OneSignal\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -157,6 +158,7 @@
     <Compile Include="AppDelegate.cs" />
     <Compile Include="DependancyServices\FirebaseDatabaseServiceIos.cs" />
     <Compile Include="DependancyServices\FirebaseAuthServiceIos.cs" />
+    <Compile Include="DependancyServices\OneSignal\OneSignalServiceIos.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="GoogleService-Info.plist" />
