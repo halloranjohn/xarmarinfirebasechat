@@ -217,14 +217,36 @@ namespace BigSlickChat.iOS
 			}
 		}
 
-		void FirebaseDatabaseService.Search<T>(string nodeKey, string orderByChildKey, Action<List<T>> action)
+		void FirebaseDatabaseService.Search<T>(string nodeKey, Action<List<T>> action, string orderByChildKey, string startAt, string endAt)
 		{
 			DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
 			DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
 
 			var watch = System.Diagnostics.Stopwatch.StartNew();
 
-			nodeRef.GetQueryOrderedByChild(orderByChildKey).ObserveSingleEvent(DataEventType.Value, (snapshot) =>
+			DatabaseQuery query = nodeRef;
+
+			//if(!string.IsNullOrEmpty(orderByChildKey))
+			//{
+			//	query.GetQueryOrderedByChild(orderByChildKey);
+			//}
+
+			//if(!string.IsNullOrEmpty(startAt))
+			//{
+			//	query.GetQueryStartingAtValue(NSObject.FromObject(startAt));
+			//}
+
+			//if(!string.IsNullOrEmpty(endAt))
+			//{
+			//	query.GetQueryEndingAtValue(NSObject.FromObject(startAt));
+			//}
+
+			nodeRef.GetQueryOrderedByChild(orderByChildKey)
+			     .GetQueryStartingAtValue(NSObject.FromObject(startAt))
+			       .GetQueryEndingAtValue(NSObject.FromObject(endAt))
+           		 .ObserveSingleEvent(DataEventType.Value, (snapshot) =>
+
+			//query.ObserveSingleEvent(DataEventType.Value, (snapshot) =>
 			{
 				if(snapshot.Exists && snapshot.HasChildren && action != null)
 				{

@@ -13,7 +13,7 @@ namespace BigSlickChat
 		void SetChildValueByAutoId(string nodeKey, object obj, Action onSuccess = null, Action<string> onError = null);
         void RemoveValue(string nodeKey, Action onSuccess = null, Action<string> onError = null);
 		//void Search<T>(string nodeKey, string orderByChild, Action<T> action);
-		void Search<T>(string nodeKey, string orderByChildKey, Action<List<T>> action);
+		void Search<T>(string nodeKey, Action<List<T>> action, string orderByChildKey = null, string startAt = null, string endAt = null);
         //void ChildExists<T>(string nodeKey, Action<T> onNodeFound = null, Action onNodeMissing = null);
 	}
 }
