@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using System;
+using System.Linq;
 
 namespace BigSlickChat
 {
@@ -24,6 +26,7 @@ namespace BigSlickChat
 			InitSidebarButton();
 			InitList();
 			InitEntry();
+			InitAddBtn();
 
             DependencyService.Get<FirebaseDatabaseService>().AddChildEvent<ChatItem>(nodeKey, OnChatItemAdded, OnChatItemRemoved, OnChatItemChanged);
             //DependencyService.Get<FirebaseDatabaseService>().AddSingleValueEvent<Dictionary<string, ChatItem>>(nodeKey, SetupChatItems);
@@ -60,6 +63,29 @@ namespace BigSlickChat
 			{
 				Navigation.PopAsync();
 				//ChangePage(new SidebarPage());
+			};
+		}
+
+		private void InitAddBtn()
+		{
+			int numToAdd = 10;
+			addBtn.Text = "Add " + numToAdd + " Random messages";
+			addBtn.HorizontalOptions = LayoutOptions.Fill;
+
+			addBtn.Clicked += (sender, e) =>
+			{
+				Random r = new Random();
+				const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+				
+				string randText;
+				int strLength = 10;
+				char[] cs;
+				for(int i = 0; i < numToAdd; i++)
+				{
+					cs = Enumerable.Repeat(chars, strLength).Select(s => s[r.Next(s.Length)]).ToArray();
+					randText = new string(cs);
+					DependencyService.Get<FirebaseDatabaseService>().SetChildValueByAutoId(nodeKey, new ChatItem(randText, "15/03/2017"));
+				}
 			};
 		}
 

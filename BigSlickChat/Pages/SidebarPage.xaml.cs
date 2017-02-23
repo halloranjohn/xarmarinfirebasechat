@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using System.Linq;
 
 namespace BigSlickChat
 {
@@ -23,6 +24,8 @@ namespace BigSlickChat
 			InitBlueButton();
             InitChatroomStackLayout();
             InitGotoLoginButton();
+            InitAddBtn();
+			InitSearchEntry();
 		}
 
         private void InitStackLayout()
@@ -206,6 +209,43 @@ namespace BigSlickChat
             UserService.Instance.SaveUserToServer();
 
 			stackLayout.BackgroundColor = Color.FromHex(UserService.Instance.User.color);
+		}
+
+		void InitSearchEntry()
+		{
+			searchEntry.Text = "Search";
+			//logoutBtn.HorizontalOptions = LayoutOptions.Center;
+
+			searchEntry.TextChanged += (sender, e) =>
+			{
+				Debug.WriteLine("searchEntry :: " + searchEntry.Text);
+
+				ChatService.Instance.SearchChats(searchEntry.Text);
+			};
+		}
+
+		private void InitAddBtn()
+		{
+			int numToAdd = 10;
+			string nodePath = string.Format("{0}{1}{2}", BigSlickChatPage.MESSAGES_URL_PREFIX, "Bri", BigSlickChatPage.MESSAGES_URL_SUFFIX);
+			addBtn.Text = "Add " + numToAdd + " Random messages";
+			addBtn.HorizontalOptions = LayoutOptions.Fill;
+
+			addBtn.Clicked += (sender, e) =>
+			{
+				Random r = new Random();
+				const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+				string randText;
+				int strLength = 10;
+				char[] cs;
+				for(int i = 0; i < numToAdd; i++)
+				{
+					cs = Enumerable.Repeat(chars, strLength).Select(s => s[r.Next(s.Length)]).ToArray();
+					randText = new string(cs);
+					DependencyService.Get<FirebaseDatabaseService>().SetChildValueByAutoId(nodePath, new ChatItem(randText, DateTime.Now.ToString()));
+				}
+			};
 		}
 	}
 }

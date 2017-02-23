@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 namespace BigSlickChat
 {
 	public interface FirebaseDatabaseService
@@ -11,6 +12,8 @@ namespace BigSlickChat
         void SetValue(string nodeKey, object obj, Action onSuccess = null, Action<string> onError = null);
 		void SetChildValueByAutoId(string nodeKey, object obj, Action onSuccess = null, Action<string> onError = null);
         void RemoveValue(string nodeKey, Action onSuccess = null, Action<string> onError = null);
+		//void Search<T>(string nodeKey, string orderByChild, Action<T> action);
+		void Search<T>(string nodeKey, string orderByChildKey, Action<List<T>> action);
         //void ChildExists<T>(string nodeKey, Action<T> onNodeFound = null, Action onNodeMissing = null);
 	}
 }

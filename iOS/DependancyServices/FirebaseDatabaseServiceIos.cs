@@ -5,6 +5,8 @@ using Firebase.Database;
 using Foundation;
 using Newtonsoft.Json;
 using Xamarin.Forms;
+using System.Diagnostics;
+using System.Collections.Specialized;
 
 [assembly: Dependency(typeof(BigSlickChat.iOS.FirebaseServiceIos))]
 namespace BigSlickChat.iOS
@@ -213,6 +215,51 @@ namespace BigSlickChat.iOS
 				nodeRef.RemoveObserver(ChildRemovedEventHandles[nodeKey]);
 				nodeRef.RemoveObserver(ChildChangedEventHandles[nodeKey]);
 			}
+		}
+
+		void FirebaseDatabaseService.Search<T>(string nodeKey, string orderByChildKey, Action<List<T>> action)
+		{
+			DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
+			DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
+
+			var watch = System.Diagnostics.Stopwatch.StartNew();
+
+			nodeRef.GetQueryOrderedByChild(orderByChildKey).ObserveSingleEvent(DataEventType.Value, (snapshot) =>
+			{
+				if(snapshot.Exists && snapshot.HasChildren && action != null)
+				{
+					watch.Stop();
+					Debug.WriteLine("search time: " + watch.ElapsedMilliseconds);
+					watch.Restart();
+
+					NSEnumerator e = snapshot.Children;
+					NSObject o = e.NextObject();
+					DataSnapshot snap;
+					NSMutableArray array = new NSMutableArray();
+
+					while(o != null)
+					{
+						//Debug.WriteLine(o.ToString());
+						snap = o as DataSnapshot;
+						array.Add(snap.GetValue());
+						o = e.NextObject();
+					}
+
+				   	NSError error = null;
+					string itemArrayStr = NSJsonSerialization.Serialize(array, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
+					List<T> itemArr = JsonConvert.DeserializeObject<List<T>>(itemArrayStr);
+
+					watch.Stop();
+					Debug.WriteLine("finish search process time: " + watch.ElapsedMilliseconds);
+
+					action(itemArr);
+				}
+				else
+				{
+					List<T> item = new List<T>();
+					action(item);
+				}
+			});
 		}
 
         //void FirebaseDatabaseService.ChildExists<T>(string nodeKey, Action<T> onNodeFound, Action onNodeMissing)

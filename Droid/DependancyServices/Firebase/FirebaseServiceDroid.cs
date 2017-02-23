@@ -151,6 +151,11 @@ namespace BigSlickChat.Droid
 				dr.RemoveValue();
 			}
 		}
+
+		void FirebaseDatabaseService.Search<T>(string nodeKey, string orderByChildKey, Action<List<T>> action)
+		{
+			throw new NotImplementedException();
+		}
 	}
 
 }

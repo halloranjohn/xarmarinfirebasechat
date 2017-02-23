@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="BigSlickChat.SidebarPage">
 	<ContentPage.Content>
 		<ScrollView x:Name="scrollView">
@@ -23,6 +23,9 @@
 				</StackLayout>
 				
 				<Button x:Name="logoutBtn"/>
+				<Button x:Name="addBtn"/>
+				<Entry x:Name="searchEntry"/>
+				
 			</StackLayout>	
 		</ScrollView>
 	</ContentPage.Content>

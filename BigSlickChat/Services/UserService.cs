@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace BigSlickChat
 {
 	public class UserService
 	{
         public const string USERS_URL_PREFIX = "users/";
+        public const string MESSAGES_URL_PREFIX = "messages/";
 
 		private static UserService instance;
 
@@ -126,5 +128,6 @@ namespace BigSlickChat
         }
 	}
 }
+
 
 
