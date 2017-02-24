@@ -21,6 +21,10 @@ namespace BigSlickChat
                                       DependencyService.Get<FirebaseDatabaseService>());
             
             ChatService.Instance.Init(DependencyService.Get<FirebaseDatabaseService>());
+
+			FirebaseDatabaseService db = DependencyService.Get<FirebaseDatabaseService>();
+
+
         }
 
         protected override void OnStart()

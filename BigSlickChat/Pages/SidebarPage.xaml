@@ -23,6 +23,11 @@
 				</StackLayout>
 				
 				<Button x:Name="logoutBtn"/>
+				<StackLayout x:Name="searchStack" Orientation="Horizontal">
+					<Entry x:Name="searchEntry"/>
+					<Button x:Name="searchButton"/>
+					<Label x:Name="searchResultsLabel"/>
+				</StackLayout>
 			</StackLayout>	
 		</ScrollView>
 	</ContentPage.Content>

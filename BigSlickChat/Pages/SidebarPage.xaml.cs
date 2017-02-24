@@ -23,6 +23,7 @@ namespace BigSlickChat
 			InitBlueButton();
             InitChatroomStackLayout();
             InitGotoLoginButton();
+			InitSearchStack();
 		}
 
         private void InitStackLayout()
@@ -33,6 +34,7 @@ namespace BigSlickChat
 			stackLayout.VerticalOptions = LayoutOptions.Center;
 			stackLayout.BackgroundColor = Color.FromHex(UserService.Instance.User.color);
 		}
+
 
         void InitAddRemoveStackLayout()
         {
@@ -49,6 +51,57 @@ namespace BigSlickChat
             removeChatroomButton.Text = "Remove";
             removeChatroomButton.Clicked += OnRemoveChatroom;
         }
+
+		private void InitSearchStack()
+		{
+			searchStack.Orientation = StackOrientation.Vertical;
+			searchStack.Padding = 20;
+			searchStack.HorizontalOptions = LayoutOptions.Center;
+			searchStack.VerticalOptions = LayoutOptions.Center;
+			searchStack.BackgroundColor = Color.FromHex(UserService.Instance.User.color);
+
+			searchButton.Text = "Search";
+			searchButton.Clicked += (sender, e) =>
+			{
+				if (searchEntry.Text != null)
+				{
+					Request request = new Request
+					{
+						requestId = "APP_TEST",
+						requesterId = "APP",
+						bodyQuery = searchEntry.Text
+					};
+
+					DependencyService.Get<FirebaseDatabaseService>().SetChildValueByAutoId("elasticSearchRequests", request);
+				}
+			};
+
+			searchEntry.Placeholder = "Search";
+
+			searchResultsLabel.Text = "Empty";
+			searchResultsLabel.HeightRequest = 200;
+			DependencyService.Get<FirebaseDatabaseService>().AddChildEvent<Response>("elasticSearchResponses/", (Response response) =>
+			{
+				if (response != null && response.MessageIds != null && response.MessageIds.Count != 0)
+				{
+					string resultsText = "FOUND " + 1 + " RESULTS FOR REQUESTER: " + response.RequestId;
+
+					foreach(string messageId in response.MessageIds)
+					{
+						resultsText += " " + messageId;
+					}
+
+					searchResultsLabel.Text = resultsText;
+				}
+				else
+				{
+					searchResultsLabel.Text = "NO RESULTS FOUND";
+				}
+
+				DependencyService.Get<FirebaseDatabaseService>().RemoveValue("elasticSearchResponses/" + response.RequestId);
+			}, null, null);
+		}
+
 
         void OnAddChatroom(object sender, EventArgs e)
         {
