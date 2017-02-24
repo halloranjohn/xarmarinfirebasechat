@@ -24,17 +24,17 @@ namespace BigSlickChat.iOS
 			ValueEventHandles = new Dictionary<string, nuint>();
 		}
 
-		void FirebaseDatabaseService.SetChildValueByAutoId(string nodeKey, object obj, Action onSuccess, Action<string> onError)
+		string FirebaseDatabaseService.SetChildValueByAutoId(string nodeKey, object obj, Action onSuccess, Action<string> onError)
 		{
 			DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
-
 			DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
 			string objectJsonString = JsonConvert.SerializeObject(obj);
             NSError jsonError = null;
 			NSData nsData = NSData.FromString(objectJsonString);
 			NSObject nsObj = NSJsonSerialization.Deserialize(nsData, NSJsonReadingOptions.AllowFragments, out jsonError);
 
-            nodeRef.GetChildByAutoId().SetValue(nsObj, (NSError error, DatabaseReference reference) => 
+			DatabaseReference newChildRef = nodeRef.GetChildByAutoId();
+			newChildRef.SetValue(nsObj, (NSError error, DatabaseReference reference) => 
             {
                 if (error == null)
                 {
@@ -48,6 +48,8 @@ namespace BigSlickChat.iOS
                     onError(error.Description);
                 }       
             });
+
+			return newChildRef.Key;
 		}
 
 		void FirebaseDatabaseService.SetValue(string nodeKey, object obj, Action onSuccess, Action<string> onError)
@@ -105,7 +107,7 @@ namespace BigSlickChat.iOS
             });
         }
 
-		void FirebaseDatabaseService.AddChildEvent<T>(string nodeKey, Action<T> OnChildAdded, Action<T> OnChildRemoved, Action<T> OnChildChanged)
+		void FirebaseDatabaseService.AddChildEvent<T>(string nodeKey, Action<string, T> OnChildAdded, Action<string, T> OnChildRemoved, Action<string, T> OnChildChanged)
 		{
 			DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
 			DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
@@ -120,7 +122,7 @@ namespace BigSlickChat.iOS
 			ChildChangedEventHandles[nodeKey] = handleReference;
 		}
 
-		nuint AddChildEvent<T>(DatabaseReference nodeRef, DataEventType type, Action<T> eventAction)
+		nuint AddChildEvent<T>(DatabaseReference nodeRef, DataEventType type, Action<string, T> eventAction)
 		{
 			nuint handleReference = nodeRef.ObserveEvent(type, (snapshot) =>
 			{
@@ -131,7 +133,7 @@ namespace BigSlickChat.iOS
 					string itemDictString = NSJsonSerialization.Serialize(itemDict, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
 
 					T item = JsonConvert.DeserializeObject<T>(itemDictString);
-					eventAction(item);
+					eventAction(snapshot.Key, item);
 				}
 			});
 

@@ -73,6 +73,7 @@ namespace BigSlickChat
 					};
 
 					DependencyService.Get<FirebaseDatabaseService>().SetChildValueByAutoId("elasticSearchRequests", request);
+					//DependencyService.Get<FirebaseDatabaseService>().SetValue("elasticSearchRequests/" + request.requestId + "/requestId", request.requestId);
 				}
 			};
 
@@ -80,7 +81,7 @@ namespace BigSlickChat
 
 			searchResultsLabel.Text = "Empty";
 			searchResultsLabel.HeightRequest = 200;
-			DependencyService.Get<FirebaseDatabaseService>().AddChildEvent<Response>("elasticSearchResponses/", (Response response) =>
+			DependencyService.Get<FirebaseDatabaseService>().AddChildEvent<Response>("elasticSearchResponses/", (string key, Response response) =>
 			{
 				if (response != null && response.MessageIds != null && response.MessageIds.Count != 0)
 				{
@@ -98,7 +99,8 @@ namespace BigSlickChat
 					searchResultsLabel.Text = "NO RESULTS FOUND";
 				}
 
-				DependencyService.Get<FirebaseDatabaseService>().RemoveValue("elasticSearchResponses/" + response.RequestId);
+				DependencyService.Get<FirebaseDatabaseService>().RemoveValue("elasticSearchResponses/" + key);
+
 			}, null, null);
 		}
 

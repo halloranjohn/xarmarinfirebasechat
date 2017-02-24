@@ -136,7 +136,7 @@ namespace BigSlickChat
 			});
 		}
 
-		public void OnChatItemAdded(ChatItem item)
+		public void OnChatItemAdded(string key, ChatItem item)
 		{
 			messages.Add(item);
 
@@ -145,12 +145,12 @@ namespace BigSlickChat
             entry.Text = null;
 		}
 
-		public void OnChatItemRemoved(ChatItem item)
+		public void OnChatItemRemoved(string key, ChatItem item)
 		{
 			// TODO: Implement
 		}
 
-		public void OnChatItemChanged(ChatItem item)
+		public void OnChatItemChanged(string key, ChatItem item)
 		{
 			// TODO: Implement
 		}
