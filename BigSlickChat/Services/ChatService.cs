@@ -93,7 +93,7 @@ namespace BigSlickChat
 		public void SearchChats(string text)
 		{
 			string path = BigSlickChatPage.MESSAGES_URL_PREFIX + "Bri/" + BigSlickChatPage.MESSAGES_URL_SUFFIX;
-			fbDatabaseService.Search<ChatItem>(path, OnSearchReturn, "Message", "PQ", "R");
+			fbDatabaseService.Search<ChatItem>(path, OnSearchReturn, "Message", "P", "QR");
 		}
 
 		public void OnSearchReturn(List<ChatItem> items)
@@ -104,10 +104,6 @@ namespace BigSlickChat
 			{
 				Debug.WriteLine(JsonConvert.SerializeObject(item));
 			}
-
-			//list.ScrollTo(messages[messages.Count - 1], ScrollToPosition.End, true);
-
-			//entry.Text = null;
 		}
 	}
 }

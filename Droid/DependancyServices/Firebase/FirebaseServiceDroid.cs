@@ -152,7 +152,27 @@ namespace BigSlickChat.Droid
 			}
 		}
 
-		void FirebaseDatabaseService.Search<T>(string nodeKey, string orderByChildKey, Action<List<T>> action)
+		void FirebaseDatabaseService.Search<T>(string nodeKey, Action<List<T>> action)
+		{ 
+			throw new NotImplementedException();
+		}
+
+		void FirebaseDatabaseService.Search<T>(string nodeKey, Action<List<T>> action, string orderByChildKey)
+		{
+			throw new NotImplementedException();
+		}
+
+		void FirebaseDatabaseService.Search<T>(string nodeKey, Action<List<T>> action, string orderByChildKey, string startAt, string endAt)
+		{
+			throw new NotImplementedException();
+		}
+
+		void FirebaseDatabaseService.SearchOrderedByFirstValues<T>(string nodeKey, Action<List<T>> action, uint limitToFirst)
+		{
+			throw new NotImplementedException();
+		}
+
+		void FirebaseDatabaseService.SearchOrderedByLastValues<T>(string nodeKey, Action<List<T>> action, uint limitToLast)
 		{
 			throw new NotImplementedException();
 		}

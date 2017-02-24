@@ -32,24 +32,24 @@ namespace BigSlickChat.iOS
 
 			DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
 			string objectJsonString = JsonConvert.SerializeObject(obj);
-            NSError jsonError = null;
+			NSError jsonError = null;
 			NSData nsData = NSData.FromString(objectJsonString);
 			NSObject nsObj = NSJsonSerialization.Deserialize(nsData, NSJsonReadingOptions.AllowFragments, out jsonError);
 
-            nodeRef.GetChildByAutoId().SetValue(nsObj, (NSError error, DatabaseReference reference) => 
-            {
-                if (error == null)
-                {
-                    if (onSuccess != null)
-                    {
-                        onSuccess();
-                    }
-                }
-                else if (onError != null)
-                {
-                    onError(error.Description);
-                }       
-            });
+			nodeRef.GetChildByAutoId().SetValue(nsObj, (NSError error, DatabaseReference reference) =>
+			{
+				if(error == null)
+				{
+					if(onSuccess != null)
+					{
+						onSuccess();
+					}
+				}
+				else if(onError != null)
+				{
+					onError(error.Description);
+				}
+			});
 		}
 
 		void FirebaseDatabaseService.SetValue(string nodeKey, object obj, Action onSuccess, Action<string> onError)
@@ -58,54 +58,54 @@ namespace BigSlickChat.iOS
 
 			DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
 
-            NSObject nsObj = null;
+			NSObject nsObj = null;
 
-            if(obj != null)
-            {
-                string objectJsonString = JsonConvert.SerializeObject(obj);
-                NSError jsonError = null;
-                NSData nsData = NSData.FromString(objectJsonString);
+			if(obj != null)
+			{
+				string objectJsonString = JsonConvert.SerializeObject(obj);
+				NSError jsonError = null;
+				NSData nsData = NSData.FromString(objectJsonString);
 
-                nsObj = NSJsonSerialization.Deserialize(nsData, NSJsonReadingOptions.AllowFragments, out jsonError);                
-            }
+				nsObj = NSJsonSerialization.Deserialize(nsData, NSJsonReadingOptions.AllowFragments, out jsonError);
+			}
 
-            nodeRef.SetValue(nsObj, (NSError error, DatabaseReference reference) =>
-            {
-                if(error == null)
-                {
-                    if(onSuccess != null)
-                    {
-                        onSuccess();                        
-                    }
-                }
-                else if(onError != null)
-                {
-                    onError(error.Description);
-                }
-            });
+			nodeRef.SetValue(nsObj, (NSError error, DatabaseReference reference) =>
+			{
+				if(error == null)
+				{
+					if(onSuccess != null)
+					{
+						onSuccess();
+					}
+				}
+				else if(onError != null)
+				{
+					onError(error.Description);
+				}
+			});
 		}
 
-        void FirebaseDatabaseService.RemoveValue(string nodeKey, Action onSuccess, Action<string> onError)
-        {
-            DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
+		void FirebaseDatabaseService.RemoveValue(string nodeKey, Action onSuccess, Action<string> onError)
+		{
+			DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
 
-            DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
+			DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
 
-            nodeRef.RemoveValue((NSError error, DatabaseReference reference) =>
-            {
-                if (error == null)
-                {
-                    if (onSuccess != null)
-                    {
-                        onSuccess();
-                    }
-                }
-                else if (onError != null)
-                {
-                    onError(error.Description);
-                }
-            });
-        }
+			nodeRef.RemoveValue((NSError error, DatabaseReference reference) =>
+			{
+				if(error == null)
+				{
+					if(onSuccess != null)
+					{
+						onSuccess();
+					}
+				}
+				else if(onError != null)
+				{
+					onError(error.Description);
+				}
+			});
+		}
 
 		void FirebaseDatabaseService.AddChildEvent<T>(string nodeKey, Action<T> OnChildAdded, Action<T> OnChildRemoved, Action<T> OnChildChanged)
 		{
@@ -126,7 +126,7 @@ namespace BigSlickChat.iOS
 		{
 			nuint handleReference = nodeRef.ObserveEvent(type, (snapshot) =>
 			{
-                if (snapshot.HasChildren && eventAction != null)
+				if(snapshot.HasChildren && eventAction != null)
 				{
 					NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
 					NSError error = null;
@@ -140,15 +140,15 @@ namespace BigSlickChat.iOS
 			return handleReference;
 		}
 
-        void FirebaseDatabaseService.AddSingleValueEvent<T>(string nodeKey, Action<T> action)
-        {
-            DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
+		void FirebaseDatabaseService.AddSingleValueEvent<T>(string nodeKey, Action<T> action)
+		{
+			DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
 
-            DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
+			DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
 
-            nodeRef.ObserveSingleEvent(DataEventType.Value, (snapshot) =>
-            {
-				if (snapshot.Exists && snapshot.HasChildren && action != null)
+			nodeRef.ObserveSingleEvent(DataEventType.Value, (snapshot) =>
+			{
+				if(snapshot.Exists && snapshot.HasChildren && action != null)
 				{
 					NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
 					NSError error = null;
@@ -162,18 +162,18 @@ namespace BigSlickChat.iOS
 					T item = default(T);
 					action(item);
 				}
-            });
-        }
+			});
+		}
 
 		void FirebaseDatabaseService.AddValueEvent<T>(string nodeKey, Action<T> action)
 		{
 			DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
 
-            DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
+			DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
 
 			nuint handleReference = nodeRef.ObserveEvent(DataEventType.Value, (snapshot) =>
 			{
-				if (snapshot.Exists && snapshot.HasChildren && action != null)
+				if(snapshot.Exists && snapshot.HasChildren && action != null)
 				{
 					NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
 					NSError error = null;
@@ -194,7 +194,7 @@ namespace BigSlickChat.iOS
 
 		void FirebaseDatabaseService.RemoveValueEvent(string nodeKey)
 		{
-			if (ValueEventHandles.ContainsKey(nodeKey))
+			if(ValueEventHandles.ContainsKey(nodeKey))
 			{
 				DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
 
@@ -206,7 +206,7 @@ namespace BigSlickChat.iOS
 
 		void FirebaseDatabaseService.RemoveChildEvent(string nodeKey)
 		{
-			if (ChildAddedEventHandles.ContainsKey(nodeKey))
+			if(ChildAddedEventHandles.ContainsKey(nodeKey))
 			{
 				DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
 
@@ -217,96 +217,108 @@ namespace BigSlickChat.iOS
 			}
 		}
 
-		void FirebaseDatabaseService.Search<T>(string nodeKey, Action<List<T>> action, string orderByChildKey, string startAt, string endAt)
+		void FirebaseDatabaseService.Search<T>(string nodeKey, Action<List<T>> action)
 		{
-			DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
-			DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
-
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-
-			DatabaseQuery query = nodeRef;
-
-			//if(!string.IsNullOrEmpty(orderByChildKey))
-			//{
-			//	query.GetQueryOrderedByChild(orderByChildKey);
-			//}
-
-			//if(!string.IsNullOrEmpty(startAt))
-			//{
-			//	query.GetQueryStartingAtValue(NSObject.FromObject(startAt));
-			//}
-
-			//if(!string.IsNullOrEmpty(endAt))
-			//{
-			//	query.GetQueryEndingAtValue(NSObject.FromObject(startAt));
-			//}
-
-			nodeRef.GetQueryOrderedByChild(orderByChildKey)
-			     .GetQueryStartingAtValue(NSObject.FromObject(startAt))
-			       .GetQueryEndingAtValue(NSObject.FromObject(endAt))
-           		 .ObserveSingleEvent(DataEventType.Value, (snapshot) =>
-
-			//query.ObserveSingleEvent(DataEventType.Value, (snapshot) =>
-			{
-				if(snapshot.Exists && snapshot.HasChildren && action != null)
-				{
-					watch.Stop();
-					Debug.WriteLine("search time: " + watch.ElapsedMilliseconds);
-					watch.Restart();
-
-					NSEnumerator e = snapshot.Children;
-					NSObject o = e.NextObject();
-					DataSnapshot snap;
-					NSMutableArray array = new NSMutableArray();
-
-					while(o != null)
-					{
-						//Debug.WriteLine(o.ToString());
-						snap = o as DataSnapshot;
-						array.Add(snap.GetValue());
-						o = e.NextObject();
-					}
-
-				   	NSError error = null;
-					string itemArrayStr = NSJsonSerialization.Serialize(array, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
-					List<T> itemArr = JsonConvert.DeserializeObject<List<T>>(itemArrayStr);
-
-					watch.Stop();
-					Debug.WriteLine("finish search process time: " + watch.ElapsedMilliseconds);
-
-					action(itemArr);
-				}
-				else
-				{
-					List<T> item = new List<T>();
-					action(item);
-				}
-			});
+			DatabaseReference nodeRef = Database.DefaultInstance.GetRootReference().GetChild(nodeKey);
+			Stopwatch watch = Stopwatch.StartNew();
+			nodeRef.ObserveSingleEvent(DataEventType.Value, (snapshot) => OnSearchReturn(action, snapshot, watch));
 		}
 
-        //void FirebaseDatabaseService.ChildExists<T>(string nodeKey, Action<T> onNodeFound, Action onNodeMissing)
-        //{
-        //    DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
+		void FirebaseDatabaseService.Search<T>(string nodeKey, Action<List<T>> action, string orderByChildKey)
+		{
+			DatabaseReference nodeRef = Database.DefaultInstance.GetRootReference().GetChild(nodeKey);
+			Stopwatch watch = Stopwatch.StartNew();
+			nodeRef.GetQueryOrderedByChild(orderByChildKey).ObserveSingleEvent(DataEventType.Value, (snapshot) => OnSearchReturn(action, snapshot, watch));
+		}
 
-        //    DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
-        //    nodeRef.ObserveSingleEvent(DataEventType.Value, (snapshot) =>
-        //    {
-        //        if (snapshot.Exists && onNodeFound != null)
-        //        {
-        //            NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
-        //            NSError error = null;
-        //            string itemDictString = NSJsonSerialization.Serialize(itemDict, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
+		void FirebaseDatabaseService.Search<T>(string nodeKey, Action<List<T>> action, string orderByChildKey, string startAt, string endAt)
+		{
+			DatabaseReference nodeRef = Database.DefaultInstance.GetRootReference().GetChild(nodeKey);
+			Stopwatch watch = Stopwatch.StartNew();
+			nodeRef.GetQueryOrderedByChild(orderByChildKey)
+			 	.GetQueryStartingAtValue(NSObject.FromObject(startAt))
+			 	.GetQueryEndingAtValue(NSObject.FromObject(endAt))
+				.ObserveSingleEvent(DataEventType.Value, (snapshot) => OnSearchReturn(action, snapshot, watch));
+		}
 
-        //            T item = JsonConvert.DeserializeObject<T>(itemDictString);
-        //            onNodeFound(item);
-        //        }
-        //        else if(onNodeMissing != null)
-        //        {
-        //            onNodeMissing();
-        //        }
-        //    });
-        //}
+		void FirebaseDatabaseService.SearchOrderedByFirstValues<T>(string nodeKey, Action<List<T>> action, uint limitToFirst)
+		{
+			DatabaseReference nodeRef = Database.DefaultInstance.GetRootReference().GetChild(nodeKey);
+			Stopwatch watch = Stopwatch.StartNew();
+			nodeRef.GetQueryOrderedByValue()
+			   .GetQueryLimitedToFirst(limitToFirst)
+			   .ObserveSingleEvent(DataEventType.Value, (snapshot) => OnSearchReturn(action, snapshot, watch));
+		}
+
+		void FirebaseDatabaseService.SearchOrderedByLastValues<T>(string nodeKey, Action<List<T>> action, uint limitToLast)
+		{
+			DatabaseReference nodeRef = Database.DefaultInstance.GetRootReference().GetChild(nodeKey);
+			Stopwatch watch = Stopwatch.StartNew();
+			nodeRef.GetQueryOrderedByValue()
+		   	   .GetQueryLimitedToLast(limitToLast)
+			   .ObserveSingleEvent(DataEventType.Value, (snapshot) => OnSearchReturn(action, snapshot, watch));
+		}
+
+		void OnSearchReturn<T>(Action<List<T>> callback, DataSnapshot snapshot, Stopwatch watch)
+		{
+			if(snapshot.Exists && snapshot.HasChildren && callback != null)
+			{
+				watch.Stop();
+				Debug.WriteLine("search time: " + watch.ElapsedMilliseconds);
+				watch.Restart();
+
+				NSEnumerator e = snapshot.Children;
+				NSObject o = e.NextObject();
+				DataSnapshot snap;
+				NSMutableArray array = new NSMutableArray();
+
+				while(o != null)
+				{
+					//Debug.WriteLine(o.ToString());
+					snap = o as DataSnapshot;
+					array.Add(snap.GetValue());
+					o = e.NextObject();
+				}
+
+				NSError error = null;
+				string itemArrayStr = NSJsonSerialization.Serialize(array, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
+				List<T> itemArr = JsonConvert.DeserializeObject<List<T>>(itemArrayStr);
+
+				watch.Stop();
+				Debug.WriteLine("finish search process time: " + watch.ElapsedMilliseconds);
+
+				callback(itemArr);
+			}
+			else
+			{
+				List<T> item = new List<T>();
+				callback(item);
+			}
+		}
+
+
+		//void FirebaseDatabaseService.ChildExists<T>(string nodeKey, Action<T> onNodeFound, Action onNodeMissing)
+		//{
+		//    DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
+
+		//    DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
+		//    nodeRef.ObserveSingleEvent(DataEventType.Value, (snapshot) =>
+		//    {
+		//        if (snapshot.Exists && onNodeFound != null)
+		//        {
+		//            NSDictionary itemDict = snapshot.GetValue<NSDictionary>();
+		//            NSError error = null;
+		//            string itemDictString = NSJsonSerialization.Serialize(itemDict, NSJsonWritingOptions.PrettyPrinted, out error).ToString();
+
+		//            T item = JsonConvert.DeserializeObject<T>(itemDictString);
+		//            onNodeFound(item);
+		//        }
+		//        else if(onNodeMissing != null)
+		//        {
+		//            onNodeMissing();
+		//        }
+		//    });
+		//}
+
 	}
-
-
 }
