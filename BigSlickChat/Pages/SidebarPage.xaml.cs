@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using System.Linq;
 
 namespace BigSlickChat
 {
@@ -18,39 +19,40 @@ namespace BigSlickChat
 		private void InitControls()
 		{
 			InitStackLayout();
-            InitAddRemoveStackLayout();
+			InitAddRemoveStackLayout();
 			InitRedButton();
 			InitBlueButton();
-            InitChatroomStackLayout();
-            InitGotoLoginButton();
+            		InitChatroomStackLayout();
+            		InitGotoLoginButton();
 			InitSearchStack();
+			InitAddBtn();
+			InitFirebaseSearchEntry();
 		}
 
-        private void InitStackLayout()
+		private void InitStackLayout()
 		{
 			stackLayout.Orientation = StackOrientation.Vertical;
-            stackLayout.Padding = 20;
+			stackLayout.Padding = 20;
 			stackLayout.HorizontalOptions = LayoutOptions.Center;
 			stackLayout.VerticalOptions = LayoutOptions.Center;
 			stackLayout.BackgroundColor = Color.FromHex(UserService.Instance.User.color);
 		}
 
-
         void InitAddRemoveStackLayout()
         {
             stackLayout.Spacing = 30;
 
-            //entry
-            chatroomEntry.Placeholder = "Chatroom Id...";
+			//entry
+			chatroomEntry.Placeholder = "Chatroom Id...";
 
-            //add button
-            addChatroomButton.Text = "Add";
-            addChatroomButton.Clicked += OnAddChatroom;
+			//add button
+			addChatroomButton.Text = "Add";
+			addChatroomButton.Clicked += OnAddChatroom;
 
-            //remove button
-            removeChatroomButton.Text = "Remove";
-            removeChatroomButton.Clicked += OnRemoveChatroom;
-        }
+			//remove button
+			removeChatroomButton.Text = "Remove";
+			removeChatroomButton.Clicked += OnRemoveChatroom;
+		}
 
 		private void InitSearchStack()
 		{
@@ -63,7 +65,7 @@ namespace BigSlickChat
 			searchButton.Text = "Search";
 			searchButton.Clicked += (sender, e) =>
 			{
-				if (searchEntry.Text != null)
+				if(searchEntry.Text != null)
 				{
 					Request request = new Request
 					{
@@ -83,7 +85,7 @@ namespace BigSlickChat
 			searchResultsLabel.HeightRequest = 200;
 			DependencyService.Get<FirebaseDatabaseService>().AddChildEvent<Response>("elasticSearchResponses/", (string key, Response response) =>
 			{
-				if (response != null && response.MessageIds != null && response.MessageIds.Count != 0)
+				if(response != null && response.MessageIds != null && response.MessageIds.Count != 0)
 				{
 					string resultsText = "FOUND " + 1 + " RESULTS FOR REQUESTER: " + response.RequestId;
 
@@ -115,72 +117,72 @@ namespace BigSlickChat
                 cr.Title = chatroomEntry.Text;
                 cr.UserIds = new List<string>() { DependencyService.Get<FirebaseAuthService>().GetUid() };
 
-                Action<bool> onChatroomCreatedSuccess = (bool obj) => 
-                {
-                    UserService.Instance.User.AddChatroom(cr.Id);
-                    UserService.Instance.SaveUserToServer();
+				Action<bool> onChatroomCreatedSuccess = (bool obj) =>
+				{
+					UserService.Instance.User.AddChatroom(cr.Id);
+					UserService.Instance.SaveUserToServer();
 
-                    InitChatroomStackLayout();
+					InitChatroomStackLayout();
 
-                    chatroomEntry.Text = null;
-                };
+					chatroomEntry.Text = null;
+				};
 
-                ChatService.Instance.CreateChatroom(cr, onChatroomCreatedSuccess);
-            }
-        }
+				ChatService.Instance.CreateChatroom(cr, onChatroomCreatedSuccess);
+			}
+		}
 
-        void OnRemoveChatroom(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(chatroomEntry.Text))
-            {
-                //logic to remove chat room
-                string chatroomId = chatroomEntry.Text;
+		void OnRemoveChatroom(object sender, EventArgs e)
+		{
+			if(!string.IsNullOrEmpty(chatroomEntry.Text))
+			{
+				//logic to remove chat room
+				string chatroomId = chatroomEntry.Text;
 
-                Action onChatroomRemoveSuccess = () => 
-                {
-                    UserService.Instance.User.RemoveChatroom(chatroomId);
-                    UserService.Instance.SaveUserToServer();
+				Action onChatroomRemoveSuccess = () =>
+				{
+					UserService.Instance.User.RemoveChatroom(chatroomId);
+					UserService.Instance.SaveUserToServer();
 
-                    InitChatroomStackLayout();
+					InitChatroomStackLayout();
 
-                    chatroomEntry.Text = null;
-                };
+					chatroomEntry.Text = null;
+				};
 
-                ChatService.Instance.RemoveChatroom(chatroomId, onChatroomRemoveSuccess);
-            }
-        }
+				ChatService.Instance.RemoveChatroom(chatroomId, onChatroomRemoveSuccess);
+			}
+		}
 
-        void InitChatroomStackLayout()
-        {
-            //InitGotoChatroom1Button();
-            //InitGotoChatroom2Button();
+		void InitChatroomStackLayout()
+		{
+			//InitGotoChatroom1Button();
+			//InitGotoChatroom2Button();
 
-            chatroomStack.Children.Clear();
+			chatroomStack.Children.Clear();
 
-            if(UserService.Instance.User.roomIds != null)
-            {                
-                foreach(string roomTitle in UserService.Instance.User.roomIds)
-                {
-                    InitChatroomBtn(roomTitle);
-                }
-            }
-        }
+			if(UserService.Instance.User.roomIds != null)
+			{
+				foreach(string roomTitle in UserService.Instance.User.roomIds)
+				{
+					InitChatroomBtn(roomTitle);
+				}
+			}
+		}
 
-        void InitChatroomBtn(string roomTitle)
-        {
-            Button btn = new Button();
-            btn.Text = roomTitle;
+		void InitChatroomBtn(string roomTitle)
+		{
+			Button btn = new Button();
+			btn.Text = roomTitle;
 
-            btn.HorizontalOptions = LayoutOptions.Center;
-                      
-            btn.Clicked += (sender, e) =>          
-            {
+			btn.HorizontalOptions = LayoutOptions.Center;
+
+			btn.Clicked += (sender, e) =>
+			{
 				ChangePage(new BigSlickChatPage(roomTitle));
-                 
-            };
 
-            chatroomStack.Children.Add(btn);
-        }
+			};
+
+			chatroomStack.Children.Add(btn);
+		}
 
 		private async Task ChangePage(Page newPage)
 		{
@@ -188,21 +190,21 @@ namespace BigSlickChat
 			//Navigation.RemovePage(this);
 		}
 
-        void InitGotoLoginButton()
-        {
-            logoutBtn.Text = "Logout";
-            logoutBtn.HorizontalOptions = LayoutOptions.Center;
+		void InitGotoLoginButton()
+		{
+			logoutBtn.Text = "Logout";
+			logoutBtn.HorizontalOptions = LayoutOptions.Center;
 
-            logoutBtn.Clicked += (sender, e) =>
-            {
-                Debug.WriteLine("NavigationStack :: " + Navigation.NavigationStack.Count);
+			logoutBtn.Clicked += (sender, e) =>
+			{
+				Debug.WriteLine("NavigationStack :: " + Navigation.NavigationStack.Count);
 
-                UserService.Instance.Signout();
-                //DependencyService.Get<FirebaseAuthService>().SignOut();
+				UserService.Instance.Signout();
+				//DependencyService.Get<FirebaseAuthService>().SignOut();
 
-                ChangePage(new LoginPage());
-            };
-        }
+				ChangePage(new LoginPage());
+			};
+		}
 
 		//void InitGotoChatroom2Button()
 		//{
@@ -251,16 +253,54 @@ namespace BigSlickChat
 			};
 		}
 
-        private void SetColor(string color)
+		private void SetColor(string color)
 		{
-            //User user = UserService.Instance.User;
-            //user.color = color;
-            //UserService.Instance.User = user;
+			//User user = UserService.Instance.User;
+			//user.color = color;
+			//UserService.Instance.User = user;
 
-            UserService.Instance.User.color = color;
-            UserService.Instance.SaveUserToServer();
+			UserService.Instance.User.color = color;
+			UserService.Instance.SaveUserToServer();
 
 			stackLayout.BackgroundColor = Color.FromHex(UserService.Instance.User.color);
+		}
+
+		void InitFirebaseSearchEntry()
+		{
+			firebaseSearchEntry.Text = "Search";
+			//logoutBtn.HorizontalOptions = LayoutOptions.Center;
+
+			firebaseSearchEntry.TextChanged += (sender, e) =>
+			{
+				Debug.WriteLine("firebase search :: " + searchEntry.Text);
+
+				ChatService.Instance.SearchChats(searchEntry.Text);
+			};
+		}
+
+		private void InitAddBtn()
+		{
+			int numToAdd = 500;
+			string nodePath = string.Format("{0}{1}{2}", BigSlickChatPage.MESSAGES_URL_PREFIX, "Bri", BigSlickChatPage.MESSAGES_URL_SUFFIX);
+			addBtn.Text = "Add " + numToAdd + " Random messages";
+			addBtn.HorizontalOptions = LayoutOptions.Fill;
+
+			addBtn.Clicked += (sender, e) =>
+			{
+				Random r = new Random();
+				const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+				string randText;
+				int strLength = 10;
+				char[] cs;
+
+				for(int i = 0; i < numToAdd; i++)
+				{
+					cs = Enumerable.Repeat(chars, strLength).Select(s => s[r.Next(s.Length)]).ToArray();
+					randText = new string(cs);
+					DependencyService.Get<FirebaseDatabaseService>().SetChildValueByAutoId(nodePath, new ChatItem(randText, DateTime.Now.ToString()));
+				}
+			};
 		}
 	}
 }
