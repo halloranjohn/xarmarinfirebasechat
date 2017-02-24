@@ -36,6 +36,7 @@ namespace BigSlickChat.iOS
 			NSObject nsObj = NSJsonSerialization.Deserialize(nsData, NSJsonReadingOptions.AllowFragments, out jsonError);
 
 			DatabaseReference newChildRef = nodeRef.GetChildByAutoId();
+
 			newChildRef.SetValue(nsObj, (NSError error, DatabaseReference reference) => 
             {
                 if (error == null)
@@ -72,6 +73,40 @@ namespace BigSlickChat.iOS
 			}
 
 			nodeRef.SetValue(nsObj, (NSError error, DatabaseReference reference) =>
+			{
+				if(error == null)
+				{
+					if(onSuccess != null)
+					{
+						onSuccess();
+					}
+				}
+				else if(onError != null)
+				{
+					onError(error.Description);
+				}
+			});
+		}
+
+		void FirebaseDatabaseService.BatchSetChildValues(string nodeKey, Dictionary<string, object> dict, Action onSuccess, Action<string> onError)
+		{
+			DatabaseReference rootRef = Database.DefaultInstance.GetRootReference();
+
+			DatabaseReference nodeRef = rootRef.GetChild(nodeKey);
+
+			NSDictionary nsDict = null;
+
+			if(dict != null)
+			{
+				string objectJsonString = JsonConvert.SerializeObject(dict);
+				NSData nsData = NSData.FromString(objectJsonString);
+
+				NSError jsonError = null;
+				nsDict = NSJsonSerialization.Deserialize(nsData, NSJsonReadingOptions.AllowFragments, out jsonError) as NSDictionary;
+			}
+
+			//nodeRef.SetValue(nsObj, (NSError error, DatabaseReference reference) =>
+			nodeRef.UpdateChildValues(nsDict, (NSError error, DatabaseReference reference) =>
 			{
 				if(error == null)
 				{

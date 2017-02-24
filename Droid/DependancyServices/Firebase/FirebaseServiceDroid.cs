@@ -120,6 +120,11 @@ namespace BigSlickChat.Droid
 			}
 		}
 
+		void BatchSetChildValues(string nodeKey, Dictionary<string, object> dict, Action onSuccess = null, Action<string> onError = null)
+		{
+			throw new NotImplementedException();
+		}
+
 		public void RemoveValueEvent(string nodeKey)
 		{
 			DatabaseReference dr = DatabaseReferences[nodeKey];

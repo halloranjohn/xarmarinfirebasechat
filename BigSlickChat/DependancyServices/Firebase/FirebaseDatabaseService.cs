@@ -10,6 +10,7 @@ namespace BigSlickChat
 		void RemoveValueEvent(string nodeKey);
 		void RemoveChildEvent(string nodeKey);
         void SetValue(string nodeKey, object obj, Action onSuccess = null, Action<string> onError = null);
+		void BatchSetChildValues(string nodeKey, Dictionary<string, object> dict, Action onSuccess = null, Action<string> onError = null);
 		string SetChildValueByAutoId(string nodeKey, object obj, Action onSuccess = null, Action<string> onError = null);
         void RemoveValue(string nodeKey, Action onSuccess = null, Action<string> onError = null);
 

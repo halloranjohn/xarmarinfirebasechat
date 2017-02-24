@@ -300,7 +300,7 @@ namespace BigSlickChat
 					randText = new string(cs);
 
 					//DependencyService.Get<FirebaseDatabaseService>().SetChildValueByAutoId(nodePath, new ChatItem(randText, DateTime.Now.ToString()));
-					FirebaseDatabaseSharedService.Instance.SetValue<ChatItem>(nodePath, new ChatItem(randText, DateTime.Now.ToString()));
+					FirebaseDatabaseSharedService.Instance.SetAndBatchSetChildren<ChatItem>(nodePath, new ChatItem(randText, DateTime.Now.ToString()));
 				}
 			};
 		}
