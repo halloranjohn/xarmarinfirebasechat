@@ -60,6 +60,8 @@
     <Compile Include="Models\ChatroomModel.cs" />
     <Compile Include="Models\Request.cs" />
     <Compile Include="Models\Response.cs" />
+    <Compile Include="Services\FirebaseDatabaseSharedService.cs" />
+    <Compile Include="Models\FirebaseItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">

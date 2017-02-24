@@ -1,26 +1,29 @@
 ﻿using System;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace BigSlickChat 
 {
-	public class ChatItem
-	{	
-		//[JsonProperty("message")]	
-		//public string message;
+	public class ChatItem : FirebaseItem
+	{
+		public string Message { private set; get; }
 
-		//[JsonProperty("date")]
-		//public string date;
+		public string Date { private set; get; }
+
+		public static List<string> chatpaths = new List<string>()
+		{
+			"allMessages/",
+			"allMessagesMore/",
+		};
 
 		public ChatItem(string message, string date)
 		{
 			Message = message;
 			Date = date;
+
+			this.paths = chatpaths;
 		}
-
-		public string Message { private set; get; }
-
-		public string Date { private set; get; }
 
 	}
 }

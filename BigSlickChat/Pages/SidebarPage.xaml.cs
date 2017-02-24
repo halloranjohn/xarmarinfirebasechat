@@ -280,8 +280,8 @@ namespace BigSlickChat
 
 		private void InitAddBtn()
 		{
-			int numToAdd = 500;
-			string nodePath = string.Format("{0}{1}{2}", BigSlickChatPage.MESSAGES_URL_PREFIX, "Bri", BigSlickChatPage.MESSAGES_URL_SUFFIX);
+			int numToAdd = 1;
+			string nodePath = string.Format("{0}{1}{2}", BigSlickChatPage.MESSAGES_URL_PREFIX, "Bri2", BigSlickChatPage.MESSAGES_URL_SUFFIX);
 			addBtn.Text = "Add " + numToAdd + " Random messages";
 			addBtn.HorizontalOptions = LayoutOptions.Fill;
 
@@ -298,7 +298,9 @@ namespace BigSlickChat
 				{
 					cs = Enumerable.Repeat(chars, strLength).Select(s => s[r.Next(s.Length)]).ToArray();
 					randText = new string(cs);
-					DependencyService.Get<FirebaseDatabaseService>().SetChildValueByAutoId(nodePath, new ChatItem(randText, DateTime.Now.ToString()));
+
+					//DependencyService.Get<FirebaseDatabaseService>().SetChildValueByAutoId(nodePath, new ChatItem(randText, DateTime.Now.ToString()));
+					FirebaseDatabaseSharedService.Instance.SetValue<ChatItem>(nodePath, new ChatItem(randText, DateTime.Now.ToString()));
 				}
 			};
 		}
