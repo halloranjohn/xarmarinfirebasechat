@@ -25,6 +25,15 @@ namespace BigSlickChat
 			Paths = chatpaths;
 		}
 
+		public override object GetFirebaseSaveData()
+		{
+			Dictionary<string, object> dict = new Dictionary<string, object>();
+
+			dict.Add("Message", Message);
+			dict.Add("Date", Date);
+
+			return dict as object;
+		}
 	}
 }
 

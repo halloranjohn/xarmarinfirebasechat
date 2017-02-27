@@ -11,5 +11,11 @@ namespace BigSlickChat
 		public FirebaseItem()
 		{
 		}
+
+		public virtual object GetFirebaseSaveData()
+		{
+			//default returns the entire object, over
+			return this;
+		}
 	}
 }
