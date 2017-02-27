@@ -22,7 +22,7 @@ namespace BigSlickChat
 			Message = message;
 			Date = date;
 
-			this.paths = chatpaths;
+			Paths = chatpaths;
 		}
 
 	}

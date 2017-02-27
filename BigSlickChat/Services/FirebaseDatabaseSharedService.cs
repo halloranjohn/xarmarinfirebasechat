@@ -33,21 +33,22 @@ namespace BigSlickChat
 		/// <param name="nodePath">Node path.</param>
 		/// <param name="obj">Object.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public void SetAndBatchSetChildren<T>(string nodePath, T obj) where T : FirebaseItem
+		public string BatchSetObj<T>(string nodePath, T obj) where T : FirebaseItem
 		{
 			//Set the object and get the key
-			string newKey = DependencyService.Get<FirebaseDatabaseService>().SetChildValueByAutoId(nodePath, obj);
+			obj.Key = DependencyService.Get<FirebaseDatabaseService>().SetChildValueByAutoId(nodePath, obj);
 
-			//Batch update all children
 			Dictionary<string, object> batch = new Dictionary<string, object>();
 
-			foreach(string path in obj.paths)
+			foreach(string path in obj.Paths)
 			{
-				batch.Add(path + newKey, obj);
+				batch.Add(path + obj.Key, obj);
 			}
 
-			//how to update parts of paths and
+			//Batch update all children, note use of root node path as all batched paths must be child nodes
 			DependencyService.Get<FirebaseDatabaseService>().BatchSetChildValues("/", batch);
+
+			return obj.Key;
 		}
 
 		/// <summary>
@@ -57,20 +58,19 @@ namespace BigSlickChat
 		/// <param name="nodePath">Node path.</param>
 		/// <param name="obj">Object.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public void UpdateAndBatchUpdateChildren<T>(string nodePath, string key, T obj) where T : FirebaseItem
+		public void BatchUpdateObj<T>(string nodePath, string key, T obj) where T : FirebaseItem
 		{
 			//Update the object and get the key
 			DependencyService.Get<FirebaseDatabaseService>().SetValue(nodePath + key, obj);
 
-			//Batch update all children
 			Dictionary<string, object> batch = new Dictionary<string, object>();
 
-			foreach(string path in obj.paths)
+			foreach(string path in obj.Paths)
 			{
 				batch.Add(path + key, obj);
 			}
 
-			//how to update parts of paths and
+			//Batch update all children, note use of root node path as all batched paths must be child nodes
 			DependencyService.Get<FirebaseDatabaseService>().BatchSetChildValues("/" + key, batch);
 		}
 
@@ -87,10 +87,26 @@ namespace BigSlickChat
 			string retKey = DependencyService.Get<FirebaseDatabaseService>().SetChildValueByAutoId(nodePath, obj);
 
 			//Cycle through 
-			foreach(string path in obj.paths)
+			foreach(string path in obj.Paths)
 			{
 				DependencyService.Get<FirebaseDatabaseService>().SetValue(path + retKey, obj);
 			}
+		}
+
+		public void BatchRemoveObj<T>(string nodePath, string key, T obj) where T : FirebaseItem
+		{
+			//Update the object and get the key
+			DependencyService.Get<FirebaseDatabaseService>().RemoveValue(nodePath + "/" + key);
+
+			Dictionary<string, object> batch = new Dictionary<string, object>();
+
+			foreach(string path in obj.Paths)
+			{
+				batch.Add(path + key, null);
+			}
+
+			//Batch update all children, note use of root node path as all batched paths must be child nodes
+			DependencyService.Get<FirebaseDatabaseService>().BatchSetChildValues("/", batch);
 		}
 	}
 }

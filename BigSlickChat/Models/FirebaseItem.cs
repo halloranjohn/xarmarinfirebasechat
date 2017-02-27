@@ -4,7 +4,9 @@ namespace BigSlickChat
 {
 	public class FirebaseItem
 	{
-		public List<string> paths;
+		public string Key { set; get; }
+
+		public List<string> Paths { set; get; }
 
 		public FirebaseItem()
 		{

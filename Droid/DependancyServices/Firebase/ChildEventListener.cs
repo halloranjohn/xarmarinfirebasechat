@@ -9,9 +9,9 @@ namespace BigSlickChat.Droid
 {
 	public class ChildEventListener<T> : Java.Lang.Object,  IChildEventListener
 	{
-		public Action<T> action;
+		public Action<string, T> action;
 
-		public ChildEventListener(Action<T> action)
+		public ChildEventListener(Action<string, T> action)
 		{
 			this.action = action;
 		}
@@ -31,7 +31,7 @@ namespace BigSlickChat.Droid
 			try
 			{
 				T chatItems = JsonConvert.DeserializeObject<T>(chatItemDaataString);
-				action(chatItems);
+				action("temp", chatItems);
 			}
 			catch
 			{

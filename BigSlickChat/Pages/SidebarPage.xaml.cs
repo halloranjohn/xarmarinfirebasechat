@@ -299,8 +299,7 @@ namespace BigSlickChat
 					cs = Enumerable.Repeat(chars, strLength).Select(s => s[r.Next(s.Length)]).ToArray();
 					randText = new string(cs);
 
-					//DependencyService.Get<FirebaseDatabaseService>().SetChildValueByAutoId(nodePath, new ChatItem(randText, DateTime.Now.ToString()));
-					FirebaseDatabaseSharedService.Instance.SetAndBatchSetChildren<ChatItem>(nodePath, new ChatItem(randText, DateTime.Now.ToString()));
+					FirebaseDatabaseSharedService.Instance.BatchSetObj<ChatItem>(nodePath, new ChatItem(randText, DateTime.Now.ToString()));
 				}
 			};
 		}

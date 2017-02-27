@@ -13,7 +13,7 @@ namespace BigSlickChat
         public const string MESSAGES_URL_PREFIX = "messages/";
         public const string MESSAGES_URL_SUFFIX = "/chatitems";
 
-		private string nodeKey;
+		private string nodePath;
 
 		private ObservableCollection<ChatItem> messages = new ObservableCollection<ChatItem>();
 
@@ -21,14 +21,14 @@ namespace BigSlickChat
 		{
 			InitializeComponent();
 
-            nodeKey = string.Format("{0}{1}{2}", MESSAGES_URL_PREFIX, channelId, MESSAGES_URL_SUFFIX);
+            nodePath = string.Format("{0}{1}{2}", MESSAGES_URL_PREFIX, channelId, MESSAGES_URL_SUFFIX);
 			InitStackLayout();
 			InitSidebarButton();
 			InitList();
 			InitEntry();
 			InitAddBtn();
 
-            DependencyService.Get<FirebaseDatabaseService>().AddChildEvent<ChatItem>(nodeKey, OnChatItemAdded, OnChatItemRemoved, OnChatItemChanged);
+            DependencyService.Get<FirebaseDatabaseService>().AddChildEvent<ChatItem>(nodePath, OnChatItemAdded, OnChatItemRemoved, OnChatItemChanged);
             //DependencyService.Get<FirebaseDatabaseService>().AddSingleValueEvent<Dictionary<string, ChatItem>>(nodeKey, SetupChatItems);
 		}
 
@@ -41,7 +41,7 @@ namespace BigSlickChat
 		{
 			base.OnDisappearing();
 
-			DependencyService.Get<FirebaseDatabaseService>().RemoveChildEvent(nodeKey);
+			DependencyService.Get<FirebaseDatabaseService>().RemoveChildEvent(nodePath);
 			//DependencyService.Get<FirebaseDatabaseService>().RemoveValueEvent(nodeKey);
 		}
 
@@ -80,11 +80,14 @@ namespace BigSlickChat
 				string randText;
 				int strLength = 10;
 				char[] cs;
+				ChatItem chat;
 				for(int i = 0; i < numToAdd; i++)
 				{
 					cs = Enumerable.Repeat(chars, strLength).Select(s => s[r.Next(s.Length)]).ToArray();
 					randText = new string(cs);
-					DependencyService.Get<FirebaseDatabaseService>().SetChildValueByAutoId(nodeKey, new ChatItem(randText, "15/03/2017"));
+					chat = new ChatItem(randText, "15/03/2017");
+					string newKey = FirebaseDatabaseSharedService.Instance.BatchSetObj(nodePath, chat);
+					chat.Key = newKey;
 				}
 			};
 		}
@@ -105,7 +108,9 @@ namespace BigSlickChat
 
 			entry.Completed += (sender, e) =>
 			{
-				DependencyService.Get<FirebaseDatabaseService>().SetChildValueByAutoId(nodeKey, new ChatItem(entry.Text, "15/03/2017"));
+				ChatItem chat = new ChatItem(entry.Text, "15/03/2017");
+				//chat.Key = DependencyService.Get<FirebaseDatabaseService>().SetChildValueByAutoId(nodePath, chat);
+				chat.Key = FirebaseDatabaseSharedService.Instance.BatchSetObj(nodePath, chat);
 			};
 		}
 
@@ -160,10 +165,34 @@ namespace BigSlickChat
 					}
 				};
 			});
+
+			list.ItemSelected += (sender, e) =>
+			{
+				DeleteChat(sender, e);
+			};
+		}
+
+		void DeleteChat(object sender, SelectedItemChangedEventArgs e)
+		{
+			ChatItem chatItem = e.SelectedItem as ChatItem;
+
+			if(chatItem.Key != null)
+			{
+				string nodePath = string.Format("{0}{1}{2}", MESSAGES_URL_PREFIX, "Bri2", MESSAGES_URL_SUFFIX);
+				FirebaseDatabaseSharedService.Instance.BatchRemoveObj(nodePath, chatItem.Key, chatItem);
+			}
+			else 
+			{
+				Debug.WriteLine("Error: Cant delete chat, No Firebase key for: " + chatItem.Message.ToString());
+			}
+
+			messages.Remove(chatItem);
 		}
 
 		public void OnChatItemAdded(string key, ChatItem item)
 		{
+			item.Key = key;
+
 			messages.Add(item);
 
 			list.ScrollTo(messages[messages.Count - 1], ScrollToPosition.End, true);

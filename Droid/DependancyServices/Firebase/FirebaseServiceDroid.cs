@@ -65,7 +65,7 @@ namespace BigSlickChat.Droid
 
 		}
 
-		public void AddChildEvent<T>(string nodeKey, Action<T> OnChildAdded, Action<T> OnChildRemoved, Action<T> OnChildUpdated)
+		public void AddChildEvent<T>(string nodeKey, Action<string, T> OnChildAdded, Action<string, T> OnChildRemoved, Action<string, T> OnChildUpdated)
 		{
 			DatabaseReference dr = GetDatabaseReference(nodeKey);
 
@@ -88,7 +88,7 @@ namespace BigSlickChat.Droid
 			ValueEventListeners.Add(nodeKey, listener);
 		}
 
-		public void SetChildValueByAutoId(string nodeKey, object obj, Action onSuccess = null, Action<string> onError = null)
+		public string SetChildValueByAutoId(string nodeKey, object obj, Action onSuccess = null, Action<string> onError = null)
 		{
 			DatabaseReference dr = FirebaseDatabase.Instance.GetReference(nodeKey);
 
@@ -100,8 +100,12 @@ namespace BigSlickChat.Droid
 				HashMap dataHashMap = new HashMap();
 				Java.Lang.Object jsonObj = gson.FromJson(objJsonString, dataHashMap.Class);
 				dataHashMap = jsonObj.JavaCast<HashMap>();
-				dr.Push().SetValue(dataHashMap);
+				DatabaseReference newChildRef = dr.Push();
+				newChildRef.SetValue(dataHashMap);
+				return newChildRef.Key;
 			}
+
+			return null;
 		}
 
 		public void SetValue(string nodeKey, object obj, Action onSuccess = null, Action<string> onError = null)
@@ -120,7 +124,7 @@ namespace BigSlickChat.Droid
 			}
 		}
 
-		void BatchSetChildValues(string nodeKey, Dictionary<string, object> dict, Action onSuccess = null, Action<string> onError = null)
+		public void BatchSetChildValues(string nodeKey, Dictionary<string, object> dict, Action onSuccess = null, Action<string> onError = null)
 		{
 			throw new NotImplementedException();
 		}
